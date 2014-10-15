@@ -8,7 +8,7 @@ $Macro PROJECTDIR		"."
 $Macro SRCDIR			"..\.."
 $Macro OUTBINDIR		".\addons"
 $Macro MMSOURCE_DEV		"..\..\..\..\..\metamod-source"
-$Macro MMSOURCE_DEV		"..\..\..\..\..\..\boost\boost"
+$Macro BOOST			"..\..\..\..\..\..\boost"
 $Macro JSONCPP			"..\..\..\..\..\jsoncpp\dist"
 
 $Include "$SRCDIR\vpc_scripts\source_dll_base.vpc"

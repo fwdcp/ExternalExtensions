@@ -1,0 +1,57 @@
+//-----------------------------------------------------------------------------
+//	externalextensions.vpc
+//
+//	Project Script
+//-----------------------------------------------------------------------------
+
+$Macro PROJECTDIR		"."
+$Macro SRCDIR			"..\.."
+$Macro OUTBINDIR		".\addons"
+$Macro MMSOURCE_DEV		"..\..\..\..\..\metamod-source"
+$Macro MMSOURCE_DEV		"..\..\..\..\..\..\boost\boost"
+$Macro JSONCPP			"..\..\..\..\..\jsoncpp\dist"
+
+$Include "$SRCDIR\vpc_scripts\source_dll_base.vpc"
+
+$Configuration
+{
+	$Compiler
+	{
+		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\game\client;$SRCDIR\game\shared;$SRCDIR\public;$MMSOURCE_DEV\core\sourcehook;$JSONCPP;$BOOST"
+		$PreprocessorDefinitions			"$BASE;externalextensionsONLY;_MBCS"
+		$TreatWarningsAsErrors				"No (/WX-)"
+	}
+
+	$Linker
+	{
+		$AdditionalDependencies				"$BASE odbc32.lib odbccp32.lib"
+	}
+}
+
+$Project "ExternalExtensions"
+{
+	$Folder	"Source Files"
+	{
+		$File	"src\externalextensions.cpp"
+		$File	"$MMSOURCE_DEV\core\sourcehook\sourcehook.cpp"
+		$File	"$MMSOURCE_DEV\core\sourcehook\sourcehook_hookmangen.cpp"
+		$File	"$MMSOURCE_DEV\core\sourcehook\sourcehook_impl_chookidman.cpp"
+		$File	"$MMSOURCE_DEV\core\sourcehook\sourcehook_impl_chookmaninfo.cpp"
+		$File	"$MMSOURCE_DEV\core\sourcehook\sourcehook_impl_cproto.cpp"
+		$File	"$MMSOURCE_DEV\core\sourcehook\sourcehook_impl_cvfnptr.cpp"
+		$File	"$JSONCPP\jsoncpp.cpp"
+	}
+	
+	$Folder	"Header Files"
+	{
+		$File	"src\externalextensions.h"
+	}
+	
+	$Folder	"Link Libraries"
+	{
+		$Lib steam_api
+		$Lib tier1
+		$Lib tier2
+		$Lib tier3
+	}
+}

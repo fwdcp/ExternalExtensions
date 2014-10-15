@@ -1,0 +1,4 @@
+$Project "externalextensions"
+{
+	"utils\externalextensions\externalextensions.vpc" [$WIN32||$POSIX]
+}

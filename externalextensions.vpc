@@ -9,6 +9,7 @@ $Macro SRCDIR			"..\.."
 $Macro OUTBINDIR		".\addons"
 $Macro MMSOURCE_DEV		"..\..\..\..\..\metamod-source"
 $Macro BOOST			"..\..\..\..\..\..\boost"
+$Macro BOOST_LIB		"..\..\..\..\..\..\boost\stage\lib"
 $Macro JSONCPP			"..\..\..\..\..\jsoncpp\dist"
 $Macro WEBSOCKETPP		"..\..\..\..\..\websocketpp"
 
@@ -26,6 +27,7 @@ $Configuration
 	$Linker
 	{
 		$AdditionalDependencies				"$BASE odbc32.lib odbccp32.lib"
+		$AdditionalLibraryDirectories		"$BASE;$BOOST_LIB"
 	}
 }
 

@@ -12,6 +12,10 @@ Changelog
 * console
   * added module
 
+General Info
+------------
+This plugin exposes a WebSockets server on port 2006. Information on communications from and to it can be found below.
+
 Modules
 -------
 

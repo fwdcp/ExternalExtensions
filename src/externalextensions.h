@@ -20,7 +20,7 @@
 
 #include "modules/console.h"
 
-#define PLUGIN_DESC "ExternalExtensions v0.1.0"
+#define PLUGIN_DESC "ExternalExtensions v0.0.1"
 
 class ExternalExtensionsPlugin: public IServerPluginCallbacks
 {

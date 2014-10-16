@@ -68,3 +68,5 @@ private:
 	websocketpp::lib::condition_variable actionNotification;
 	websocketpp::lib::mutex connectionLock;
 };
+
+extern WebSockets *g_WebSockets;

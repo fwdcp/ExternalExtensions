@@ -12,9 +12,13 @@
 
 #include <thread>
 
+#include "cdll_int.h"
 #include "engine/iserverplugin.h"
+#include "tier3/tier3.h"
 
 #include "websockets.h"
+
+#include "modules/console.h"
 
 #define PLUGIN_DESC "ExternalExtensions v0.1.0"
 
@@ -46,3 +50,5 @@ public:
 	virtual void			OnEdictAllocated(edict_t *edict);
 	virtual void			OnEdictFreed(const edict_t *edict);
 };
+
+extern IVEngineClient *engine;

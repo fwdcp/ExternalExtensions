@@ -3,6 +3,15 @@ ExternalExtensions
 
 plugin exposing an API to the Team Fortress 2 client
 
+Changelog
+---------
+
+*0.0.1*
+* general
+  * initial version
+* console
+  * added module
+
 Modules
 -------
 

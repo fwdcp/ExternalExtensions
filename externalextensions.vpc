@@ -36,6 +36,7 @@ $Project "ExternalExtensions"
 	$Folder	"Source Files"
 	{
 		$File	"src\externalextensions.cpp"
+		$File	"src\websockets.cpp"
 		$File	"$MMSOURCE_DEV\core\sourcehook\sourcehook.cpp"
 		$File	"$MMSOURCE_DEV\core\sourcehook\sourcehook_hookmangen.cpp"
 		$File	"$MMSOURCE_DEV\core\sourcehook\sourcehook_impl_chookidman.cpp"
@@ -48,6 +49,7 @@ $Project "ExternalExtensions"
 	$Folder	"Header Files"
 	{
 		$File	"src\externalextensions.h"
+		$File	"src\websockets.h"
 	}
 	
 	$Folder	"Link Libraries"

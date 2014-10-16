@@ -215,3 +215,7 @@ FakesAssemblies/
 # VPC files
 *.vpc_crc
 *.vpc.sentinel
+
+# VS project files
+*.vcxproj
+*.vcxproj.filters

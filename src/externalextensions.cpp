@@ -12,6 +12,8 @@
 
 WebSockets *g_WebSockets = nullptr;
 
+IVEngineClient *engine = NULL;
+
 //
 // The plugin is a static singleton that is exported as an interface
 //
@@ -26,6 +28,12 @@ bool ExternalExtensionsPlugin::Load(CreateInterfaceFn interfaceFactory, CreateIn
 
 	std::thread ws(&WebSockets::Run, g_WebSockets);
 	ws.detach();
+
+	ConnectTier1Libraries(&interfaceFactory, 1);
+	ConnectTier2Libraries(&interfaceFactory, 1);
+	ConnectTier3Libraries(&interfaceFactory, 1);
+
+	engine = (IVEngineClient *)interfaceFactory(VENGINE_CLIENT_INTERFACE_VERSION, NULL);
 
 	return true;
 }

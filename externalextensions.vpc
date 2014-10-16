@@ -10,6 +10,7 @@ $Macro OUTBINDIR		".\addons"
 $Macro MMSOURCE_DEV		"..\..\..\..\..\metamod-source"
 $Macro BOOST			"..\..\..\..\..\..\boost"
 $Macro JSONCPP			"..\..\..\..\..\jsoncpp\dist"
+$Macro WEBSOCKETPP		"..\..\..\..\..\websocketpp"
 
 $Include "$SRCDIR\vpc_scripts\source_dll_base.vpc"
 
@@ -17,7 +18,7 @@ $Configuration
 {
 	$Compiler
 	{
-		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\game\client;$SRCDIR\game\shared;$SRCDIR\public;$MMSOURCE_DEV\core\sourcehook;$JSONCPP;$BOOST"
+		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\game\client;$SRCDIR\game\shared;$SRCDIR\public;$MMSOURCE_DEV\core\sourcehook;$JSONCPP;$BOOST;$WEBSOCKETPP"
 		$PreprocessorDefinitions			"$BASE;externalextensionsONLY;_MBCS"
 		$TreatWarningsAsErrors				"No (/WX-)"
 	}

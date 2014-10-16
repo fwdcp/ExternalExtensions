@@ -12,6 +12,8 @@
 
 WebSockets *g_WebSockets = nullptr;
 
+Console *g_Console = nullptr;
+
 IVEngineClient *engine = NULL;
 
 //
@@ -34,6 +36,8 @@ bool ExternalExtensionsPlugin::Load(CreateInterfaceFn interfaceFactory, CreateIn
 	ConnectTier3Libraries(&interfaceFactory, 1);
 
 	engine = (IVEngineClient *)interfaceFactory(VENGINE_CLIENT_INTERFACE_VERSION, NULL);
+
+	g_Console = new Console();
 
 	return true;
 }

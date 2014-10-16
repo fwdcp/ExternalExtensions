@@ -18,6 +18,8 @@
 
 #include "websockets.h"
 
+#include "modules/console.h"
+
 #define PLUGIN_DESC "ExternalExtensions v0.1.0"
 
 class ExternalExtensionsPlugin: public IServerPluginCallbacks

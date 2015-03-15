@@ -384,6 +384,14 @@ bool Player::IsAlive() const {
 	return false;
 }
 
+bool Player::IsLocalPlayer() const {
+	if (IsValid()) {
+		return playerEntity->entindex() == Interfaces::pEngineClient->GetLocalPlayer();
+	}
+
+	return false;
+}
+
 Player::Iterator::Iterator(const Player::Iterator& old) {
 	index = old.index;
 }
@@ -504,6 +512,7 @@ Player::Iterator Player::end() {
 bool Player::classRetrievalAvailable = false;
 bool Player::comparisonAvailable = false;
 bool Player::conditionsRetrievalAvailable = false;
+bool Player::localPlayerCheckAvailable = false;
 bool Player::nameRetrievalAvailable = false;
 bool Player::steamIDRetrievalAvailable = false;
 bool Player::userIDRetrievalAvailable = false;
@@ -521,6 +530,7 @@ bool Player::CheckDependencies() {
 	classRetrievalAvailable = true;
 	comparisonAvailable = true;
 	conditionsRetrievalAvailable = true;
+	localPlayerCheckAvailable = true;
 	nameRetrievalAvailable = true;
 	steamIDRetrievalAvailable = true;
 	userIDRetrievalAvailable = true;
@@ -529,6 +539,7 @@ bool Player::CheckDependencies() {
 		PRINT_TAG();
 		Warning("Interface IVEngineClient for player helper class not available (required for retrieving certain info)!\n");
 
+		localPlayerCheckAvailable = false;
 		nameRetrievalAvailable = false;
 		steamIDRetrievalAvailable = false;
 		userIDRetrievalAvailable = false;

@@ -70,6 +70,7 @@ public:
 	TFTeam GetTeam() const;
 	int GetUserID() const;
 	bool IsAlive() const;
+	bool IsLocalPlayer() const;
 
 	class Iterator {
 		friend class Player;
@@ -101,6 +102,7 @@ public:
 	static bool classRetrievalAvailable;
 	static bool comparisonAvailable;
 	static bool conditionsRetrievalAvailable;
+	static bool localPlayerCheckAvailable;
 	static bool nameRetrievalAvailable;
 	static bool steamIDRetrievalAvailable;
 	static bool userIDRetrievalAvailable;

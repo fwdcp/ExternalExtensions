@@ -18,6 +18,7 @@
 #include "websockets.h"
 
 #include "modules/console.h"
+#include "modules/gameinfo.h"
 
 ModuleManager *g_ModuleManager = nullptr;
 
@@ -44,6 +45,7 @@ bool ExternalExtensionsPlugin::Load(CreateInterfaceFn interfaceFactory, CreateIn
 	g_ModuleManager = new ModuleManager();
 
 	g_ModuleManager->LoadModule<Console>("Console");
+	g_ModuleManager->LoadModule<GameInfo>("Game Info");
 
 	ConVar_Register();
 

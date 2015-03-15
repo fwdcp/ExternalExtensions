@@ -44,6 +44,7 @@ $Project "ExternalExtensions"
 		$File	"src\tfdefs.cpp"
 		$File	"src\websockets.cpp"
 		$File	"src\modules\console.cpp"
+		$File	"src\modules\gameinfo.cpp"
 		$File	"$JSONCPP\jsoncpp.cpp"
 	}
 	
@@ -60,6 +61,7 @@ $Project "ExternalExtensions"
 		$File	"src\tfdefs.h"
 		$File	"src\websockets.h"
 		$File	"src\modules\console.h"
+		$File	"src\modules\gameinfo.h"
 	}
 	
 	$Folder	"Link Libraries"

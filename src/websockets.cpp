@@ -39,6 +39,7 @@ void WebSockets::Start() {
 			return;
 		}
 
+		server.reset();
 		server.listen(port->GetInt());
 		server.start_accept();
 

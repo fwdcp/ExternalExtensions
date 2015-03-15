@@ -10,30 +10,71 @@
 
 #include "websockets.h"
 
-void WebSockets::Run() {
+#include "dbg.h"
+
+WebSockets::WebSockets() {
+	port = new ConVar("externalextensions_port", "2006", FCVAR_NONE, "port to run the WebSockets server on");
+	start = new ConCommand("externalextensions_start", []() { g_WebSockets->Start(); }, "start the WebSocket server (if not already running)", FCVAR_NONE);
+	stop = new ConCommand("externalextensions_stop", []() { g_WebSockets->Stop(); }, "stop the WebSocket server (if already running)", FCVAR_NONE);
+
 	try {
+		server.init_asio();
+
 		server.set_open_handler(websocketpp::lib::bind(&WebSockets::OnOpen, this, websocketpp::lib::placeholders::_1));
 		server.set_close_handler(websocketpp::lib::bind(&WebSockets::OnClose, this, websocketpp::lib::placeholders::_1));
 		server.set_message_handler(websocketpp::lib::bind(&WebSockets::OnMessage, this, websocketpp::lib::placeholders::_1, websocketpp::lib::placeholders::_2));
 
-		server.init_asio();
-		server.listen(2006);
-		server.start_accept();
-
-		websocketpp::lib::thread processor(websocketpp::lib::bind(&WebSockets::ProcessEvents, this));
-
-		server.run();
-
-		processor.join();
+		processor = websocketpp::lib::thread(websocketpp::lib::bind(&WebSockets::ProcessEvents, this));
 	}
-	catch (const std::exception & e) {
+	catch (std::exception &e) {
 		Warning(e.what());
 	}
-	catch (websocketpp::lib::error_code e) {
-		Warning(e.message().c_str());
+}
+
+void WebSockets::Start() {
+	try {
+		if (server.is_listening()) {
+			Msg("WebSockets server is already running.\n");
+
+			return;
+		}
+
+		server.listen(port->GetInt());
+		server.start_accept();
+
+		runner = websocketpp::lib::thread(websocketpp::lib::bind(&websocketpp::server<websocketpp::config::asio>::run, &server));
 	}
-	catch (...) {
-		Warning("other exception");
+	catch (std::exception &e) {
+		Warning(e.what());
+	}
+}
+
+void WebSockets::Stop() {
+	try {
+		if (!server.is_listening()) {
+			Msg("WebSockets server is already not running.\n");
+
+			return;
+		}
+
+		server.stop_listening();
+
+		for (websocketpp::connection_hdl connection : currentConnections) {
+			try {
+				server.close(connection, websocketpp::close::status::going_away, "server shutting down");
+			}
+			catch (std::exception &e) {
+				Warning(e.what());
+			}
+		}
+
+		runner.join();
+
+		server.stop();
+		server.reset();
+	}
+	catch (std::invalid_argument &e) {
+		Warning(e.what());
 	}
 }
 

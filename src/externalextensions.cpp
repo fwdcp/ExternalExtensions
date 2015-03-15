@@ -28,14 +28,13 @@ ExternalExtensionsPlugin::~ExternalExtensionsPlugin() {}
 bool ExternalExtensionsPlugin::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory) {
 	g_WebSockets = new WebSockets();
 
-	std::thread ws(&WebSockets::Run, g_WebSockets);
-	ws.detach();
-
 	ConnectTier1Libraries(&interfaceFactory, 1);
 	ConnectTier2Libraries(&interfaceFactory, 1);
 	ConnectTier3Libraries(&interfaceFactory, 1);
 
 	engine = (IVEngineClient *)interfaceFactory(VENGINE_CLIENT_INTERFACE_VERSION, NULL);
+
+	ConVar_Register();
 
 	g_Console = new Console();
 

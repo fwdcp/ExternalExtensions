@@ -27,7 +27,7 @@ WebSockets::WebSockets() {
 		processor = websocketpp::lib::thread(websocketpp::lib::bind(&WebSockets::ProcessEvents, this));
 	}
 	catch (std::exception &e) {
-		Warning(e.what());
+		Warning("%s\n", e.what());
 	}
 }
 
@@ -45,7 +45,7 @@ void WebSockets::Start() {
 		runner = websocketpp::lib::thread(websocketpp::lib::bind(&websocketpp::server<websocketpp::config::asio>::run, &server));
 	}
 	catch (std::exception &e) {
-		Warning(e.what());
+		Warning("%s\n", e.what());
 	}
 }
 
@@ -64,7 +64,7 @@ void WebSockets::Stop() {
 				server.close(connection, websocketpp::close::status::going_away, "server shutting down");
 			}
 			catch (std::exception &e) {
-				Warning(e.what());
+				Warning("%s\n", e.what());
 			}
 		}
 
@@ -233,12 +233,12 @@ void WebSockets::ProcessEvents() {
 			websocketpp::lib::unique_lock<websocketpp::lib::mutex> lock(connectionLock);
 
 			Json::FastWriter writer;
-			websocketpp::lib::error_code error;
 
-			server.send(action.associatedConnection, writer.write(action.message), websocketpp::frame::opcode::text, error);
-
-			if (error) {
-				Warning(error.message().c_str());
+			try {
+				server.send(action.associatedConnection, writer.write(action.message), websocketpp::frame::opcode::text);
+			}
+			catch (std::exception &e) {
+				Warning("%s\n", e.what());
 			}
 		}
 		else if (action.type == ActionType_OutgoingGlobalMessage) {
@@ -248,15 +248,12 @@ void WebSockets::ProcessEvents() {
 			std::string payload = writer.write(action.message);
 
 			for (auto iterator = currentConnections.begin(); iterator != currentConnections.end(); ++iterator) {
-				websocketpp::lib::error_code error;
-
-				server.send(*iterator, payload, websocketpp::frame::opcode::text, error);
-
-				if (error) {
-					Warning(error.message().c_str());
+				try {
+					server.send(*iterator, payload, websocketpp::frame::opcode::text);
 				}
-				
-				error.clear();
+				catch (std::exception &e) {
+					Warning("%s\n", e.what());
+				}
 			}
 		}
 

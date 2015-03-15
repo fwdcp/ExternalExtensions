@@ -66,6 +66,7 @@ public:
 	std::string GetName() const;
 	int GetObserverMode() const;
 	C_BaseEntity *GetObserverTarget() const;
+	Vector GetPosition() const;
 	CSteamID GetSteamID() const;
 	TFTeam GetTeam() const;
 	int GetUserID() const;

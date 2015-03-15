@@ -324,6 +324,14 @@ C_BaseEntity *Player::GetObserverTarget() const {
 	return playerEntity->GetBaseEntity();
 }
 
+Vector Player::GetPosition() const {
+	if (IsValid()) {
+		return playerEntity->GetAbsOrigin();
+	}
+
+	return Vector();
+}
+
 CSteamID Player::GetSteamID() const {
 	if (IsValid()) {
 		player_info_t playerInfo;

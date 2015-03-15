@@ -2,7 +2,7 @@
  *  websockets.cpp
  *  ExternalExtensions project
  *
- *  Copyright (c) 2014 thesupremecommander
+ *  Copyright (c) 2015 thesupremecommander
  *  MIT License
  *  http://opensource.org/licenses/MIT
  *
@@ -210,8 +210,8 @@ void WebSockets::ProcessEvents() {
 
 			currentConnections.insert(action.associatedConnection);
 
-			for (auto iterator = connectHooks.begin(); iterator != connectHooks.end(); ++iterator) {
-				iterator->second(action.associatedConnection);
+			for (auto iterator : connectHooks) {
+				iterator.second(action.associatedConnection);
 			}
 		}
 		else if (action.type == ActionType_Disconnected) {
@@ -219,15 +219,15 @@ void WebSockets::ProcessEvents() {
 
 			currentConnections.erase(action.associatedConnection);
 
-			for (auto iterator = disconnectHooks.begin(); iterator != disconnectHooks.end(); ++iterator) {
-				iterator->second(action.associatedConnection);
+			for (auto iterator : disconnectHooks) {
+				iterator.second(action.associatedConnection);
 			}
 		}
 		else if (action.type == ActionType_IncomingMessage) {
 			websocketpp::lib::unique_lock<websocketpp::lib::mutex> lock(connectionLock);
 
-			for (auto iterator = messageHooks.begin(); iterator != messageHooks.end(); ++iterator) {
-				iterator->second(action.associatedConnection, action.message);
+			for (auto iterator : messageHooks) {
+				iterator.second(action.associatedConnection, action.message);
 			}
 		}
 		else if (action.type == ActionType_OutgoingPrivateMessage) {
@@ -248,9 +248,9 @@ void WebSockets::ProcessEvents() {
 			Json::FastWriter writer;
 			std::string payload = writer.write(action.message);
 
-			for (auto iterator = currentConnections.begin(); iterator != currentConnections.end(); ++iterator) {
+			for (websocketpp::connection_hdl connection : currentConnections) {
 				try {
-					server.send(*iterator, payload, websocketpp::frame::opcode::text);
+					server.send(connection, payload, websocketpp::frame::opcode::text);
 				}
 				catch (std::exception &e) {
 					Warning("%s\n", e.what());

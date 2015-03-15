@@ -2,7 +2,7 @@
  *  websockets.h
  *  ExternalExtensions project
  *
- *  Copyright (c) 2014 thesupremecommander
+ *  Copyright (c) 2015 thesupremecommander
  *  MIT License
  *  http://opensource.org/licenses/MIT
  *

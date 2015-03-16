@@ -63,7 +63,7 @@ bool GameInfo::CheckDependencies(std::string name) {
 void GameInfo::ReceiveMessage(websocketpp::connection_hdl connection, Json::Value message) {
 	std::string messageType = message.get("type", "").asString();
 
-	if (messageType.compare("getgameinfo") == 0) {
+	if (messageType.compare("gameinforequest") == 0) {
 		Json::Value message;
 		message["type"] = "gameinfo";
 		message["players"] = Json::Value(Json::arrayValue);

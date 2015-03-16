@@ -10,7 +10,6 @@
 
 #include "gameinfo.h"
 
-#include <sstream>
 #include <thread>
 
 #include "cbase.h"
@@ -82,12 +81,7 @@ void GameInfo::ReceiveMessage(websocketpp::connection_hdl connection, Json::Valu
 				}
 
 				if (Player::steamIDRetrievalAvailable) {
-					uint64 steamid = player.GetSteamID().ConvertToUint64();
-
-					std::ostringstream ss;
-					ss << steamid;
-					
-					playerJson["steam"] = ss.str();
+					playerJson["steam"] = Json::valueToString(player.GetSteamID().ConvertToUint64());
 				}
 
 				playerJson["alive"] = player.IsAlive();

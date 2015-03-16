@@ -12,11 +12,15 @@
 
 #include <thread>
 
+#include <boost/asio.hpp>
+
 #include "cbase.h"
 #include "c_baseentity.h"
 #include "cdll_int.h"
 #include "dbg.h"
 #include "icliententity.h"
+#include "inetchannelinfo.h"
+#include "steam/steam_api.h"
 
 #include "../common.h"
 #include "../gamedata.h"
@@ -46,6 +50,13 @@ bool GameInfo::CheckDependencies(std::string name) {
 		ready = false;
 	}
 
+	if (!Interfaces::steamLibrariesAvailable) {
+		PRINT_TAG();
+		Warning("Required Steam libraries for module %s not available!\n", name.c_str());
+
+		ready = false;
+	}
+
 	return ready;
 }
 
@@ -56,6 +67,39 @@ void GameInfo::ReceiveMessage(websocketpp::connection_hdl connection, Json::Valu
 		Json::Value message;
 		message["type"] = "gameinfo";
 		message["players"] = Json::Value(Json::arrayValue);
+		
+		CSteamID steamID = Interfaces::pSteamAPIContext->SteamUser()->GetSteamID();
+
+		message["client"]["name"] = Interfaces::pSteamAPIContext->SteamFriends()->GetPersonaName();
+		message["client"]["steam"] = Json::valueToString(steamID.ConvertToUint64());
+
+		if (Interfaces::pEngineClient->IsPlayingDemo()) {
+			message["game"]["type"] = "demo";
+			message["game"]["tick"] = Interfaces::pEngineClient->GetDemoPlaybackTick();
+			message["game"]["paused"] = Interfaces::pEngineClient->IsPaused();
+		}
+		else if (Interfaces::pEngineClient->IsConnected()) {
+			if (Interfaces::pEngineClient->IsHLTV()) {
+				message["game"]["type"] = "sourcetv";
+			}
+			else {
+				message["game"]["type"] = "game";
+			}
+
+			ConVar *password = g_pCVar->FindVar("password");
+
+			if (password) {
+				message["game"]["password"] = password->GetString();
+			}
+
+			INetChannelInfo *channel = Interfaces::pEngineClient->GetNetChannelInfo();
+
+			if (channel) {
+				message["game"]["address"] = channel->GetAddress();
+			}
+		}
+
+		message["map"] = Interfaces::pEngineClient->GetLevelName();
 
 		for (Player player : Player::Iterable()) {
 			if (player) {

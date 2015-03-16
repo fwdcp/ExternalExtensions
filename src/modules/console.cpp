@@ -50,12 +50,13 @@ void Console::ReceiveMessage(websocketpp::connection_hdl connection, Json::Value
 		}
 	}
 	else if (messageType.compare("convarchange") == 0) {
-		const char *name = message.get("name", "").asCString();
+		std::string name = message.get("name", "").asString();
+		std::string value = message.get("value", "").asString();
 
-		ConVar *convar = g_pCVar->FindVar(name);
+		ConVar *convar = g_pCVar->FindVar(name.c_str());
 
 		if (convar) {
-			convar->SetValue(message.get("value", "").asCString());
+			convar->SetValue(value.c_str());
 		}
 	}
 	else if (messageType.compare("autocomplete") == 0) {

@@ -31,5 +31,6 @@ public:
 	virtual void DPrint(const char *pMessage);
 private:
 	std::vector<std::string> GetAutoComplete(websocketpp::connection_hdl connection, std::string partial);
+	void OnConVarChange(IConVar *var, const char *pOldValue, float flOldValue);
 	std::map<websocketpp::connection_hdl, std::vector<std::string>, std::owner_less<websocketpp::connection_hdl>> commandHistory;
 };

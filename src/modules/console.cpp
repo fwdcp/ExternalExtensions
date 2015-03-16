@@ -19,6 +19,7 @@
 #include "../websockets.h"
 
 Console::Console(std::string name) : Module(name) {
+	g_pCVar->InstallGlobalChangeCallback([](IConVar *var, const char *pOldValue, float flOldValue) { g_ModuleManager->GetModule<Console>("Console")->OnConVarChange(var, pOldValue, flOldValue); });
 	g_pCVar->InstallConsoleDisplayFunc(this);
 
 	g_WebSockets->RegisterMessageHook(std::bind(&Console::ReceiveMessage, this, std::placeholders::_1, std::placeholders::_2));
@@ -46,6 +47,15 @@ void Console::ReceiveMessage(websocketpp::connection_hdl connection, Json::Value
 		if (!command.empty()) {
 			commandHistory[connection].push_back(command);
 			Interfaces::pEngineClient->ClientCmd_Unrestricted(command.c_str());
+		}
+	}
+	else if (messageType.compare("convarchange") == 0) {
+		const char *name = message.get("name", "").asCString();
+
+		ConVar *convar = g_pCVar->FindVar(name);
+
+		if (convar) {
+			convar->SetValue(message.get("value", "").asCString());
 		}
 	}
 	else if (messageType.compare("autocomplete") == 0) {
@@ -138,4 +148,15 @@ std::vector<std::string> Console::GetAutoComplete(websocketpp::connection_hdl co
 	}
 
 	return results;
+}
+
+void Console::OnConVarChange(IConVar *var, const char *pOldValue, float flOldValue) {
+	Json::Value message;
+	message["type"] = "convarchanged";
+	message["name"] = var->GetName();
+	message["oldvalue"] = pOldValue;
+	message["newvalue"] = g_pCVar->FindVar(var->GetName())->GetString();
+
+	std::thread sendMessage(std::bind(&WebSockets::SendGlobalMessage, g_WebSockets, message));
+	sendMessage.detach();
 }

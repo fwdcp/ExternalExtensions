@@ -85,8 +85,9 @@ void Console::ReceiveMessage(websocketpp::connection_hdl connection, Json::Value
 		Json::Value message;
 		message["type"] = "autocompleteresults";
 		message["partial"] = partial;
-		for (auto iterator = autoCompleteResults.begin(); iterator != autoCompleteResults.end(); ++iterator) {
-			message["results"].append(*iterator);
+
+		for (std::string autoCompleteResult : autoCompleteResults) {
+			message["results"].append(autoCompleteResult);
 		}
 
 		std::thread sendMessage(std::bind(&WebSockets::SendPrivateMessage, g_WebSockets, connection, message));

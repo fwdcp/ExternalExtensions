@@ -49,6 +49,24 @@ void Console::ReceiveMessage(websocketpp::connection_hdl connection, Json::Value
 			Interfaces::pEngineClient->ClientCmd_Unrestricted(command.c_str());
 		}
 	}
+	else if (messageType.compare("convarquery") == 0) {
+		std::string name = message.get("name", "").asString();
+
+		Json::Value message;
+		message["type"] = "convarqueryresult";
+		message["name"] = name;
+
+		ConVar *convar = g_pCVar->FindVar(name.c_str());
+
+		if (convar) {
+			message["exists"] = true;
+			message["help"] = convar->GetHelpText();
+			message["value"] = convar->GetString();
+
+			std::thread sendMessage(std::bind(&WebSockets::SendPrivateMessage, g_WebSockets, connection, message));
+			sendMessage.detach();
+		}
+	}
 	else if (messageType.compare("convarchange") == 0) {
 		std::string name = message.get("name", "").asString();
 		std::string value = message.get("value", "").asString();

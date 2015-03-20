@@ -62,10 +62,13 @@ void Console::ReceiveMessage(websocketpp::connection_hdl connection, Json::Value
 			message["exists"] = true;
 			message["help"] = convar->GetHelpText();
 			message["value"] = convar->GetString();
-
-			std::thread sendMessage(std::bind(&WebSockets::SendPrivateMessage, g_WebSockets, connection, message));
-			sendMessage.detach();
 		}
+		else {
+			message["exists"] = false;
+		}
+
+		std::thread sendMessage(std::bind(&WebSockets::SendPrivateMessage, g_WebSockets, connection, message));
+		sendMessage.detach();
 	}
 	else if (messageType.compare("convarchange") == 0) {
 		std::string name = message.get("name", "").asString();

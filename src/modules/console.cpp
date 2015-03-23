@@ -2,7 +2,7 @@
  *  console.cpp
  *  ExternalExtensions project
  *
- *  Copyright (c) 2014 thesupremecommander
+ *  Copyright (c) 2015 thesupremecommander
  *  MIT License
  *  http://opensource.org/licenses/MIT
  *
@@ -10,10 +10,32 @@
 
 #include "console.h"
 
-Console::Console() {
+#include <thread>
+
+#include "cdll_int.h"
+
+#include "../common.h"
+#include "../ifaces.h"
+#include "../websockets.h"
+
+Console::Console(std::string name) : Module(name) {
+	g_pCVar->InstallGlobalChangeCallback([](IConVar *var, const char *pOldValue, float flOldValue) { g_ModuleManager->GetModule<Console>("Console")->OnConVarChange(var, pOldValue, flOldValue); });
 	g_pCVar->InstallConsoleDisplayFunc(this);
 
 	g_WebSockets->RegisterMessageHook(std::bind(&Console::ReceiveMessage, this, std::placeholders::_1, std::placeholders::_2));
+}
+
+bool Console::CheckDependencies(std::string name) {
+	bool ready = true;
+
+	if (!Interfaces::pEngineClient) {
+		PRINT_TAG();
+		Warning("Required interface IVEngineClient for module %s not available!\n", name.c_str());
+
+		ready = false;
+	}
+
+	return ready;
 }
 
 void Console::ReceiveMessage(websocketpp::connection_hdl connection, Json::Value message) {
@@ -24,7 +46,38 @@ void Console::ReceiveMessage(websocketpp::connection_hdl connection, Json::Value
 
 		if (!command.empty()) {
 			commandHistory[connection].push_back(command);
-			engine->ClientCmd_Unrestricted(command.c_str());
+			Interfaces::pEngineClient->ClientCmd_Unrestricted(command.c_str());
+		}
+	}
+	else if (messageType.compare("convarquery") == 0) {
+		std::string name = message.get("name", "").asString();
+
+		Json::Value message;
+		message["type"] = "convarqueryresult";
+		message["name"] = name;
+
+		ConVar *convar = g_pCVar->FindVar(name.c_str());
+
+		if (convar) {
+			message["exists"] = true;
+			message["help"] = convar->GetHelpText();
+			message["value"] = convar->GetString();
+		}
+		else {
+			message["exists"] = false;
+		}
+
+		std::thread sendMessage(std::bind(&WebSockets::SendPrivateMessage, g_WebSockets, connection, message));
+		sendMessage.detach();
+	}
+	else if (messageType.compare("convarchange") == 0) {
+		std::string name = message.get("name", "").asString();
+		std::string value = message.get("value", "").asString();
+
+		ConVar *convar = g_pCVar->FindVar(name.c_str());
+
+		if (convar) {
+			convar->SetValue(value.c_str());
 		}
 	}
 	else if (messageType.compare("autocomplete") == 0) {
@@ -35,8 +88,9 @@ void Console::ReceiveMessage(websocketpp::connection_hdl connection, Json::Value
 		Json::Value message;
 		message["type"] = "autocompleteresults";
 		message["partial"] = partial;
-		for (auto iterator = autoCompleteResults.begin(); iterator != autoCompleteResults.end(); ++iterator) {
-			message["results"].append(*iterator);
+
+		for (std::string autoCompleteResult : autoCompleteResults) {
+			message["results"].append(autoCompleteResult);
 		}
 
 		std::thread sendMessage(std::bind(&WebSockets::SendPrivateMessage, g_WebSockets, connection, message));
@@ -117,4 +171,15 @@ std::vector<std::string> Console::GetAutoComplete(websocketpp::connection_hdl co
 	}
 
 	return results;
+}
+
+void Console::OnConVarChange(IConVar *var, const char *pOldValue, float flOldValue) {
+	Json::Value message;
+	message["type"] = "convarchanged";
+	message["name"] = var->GetName();
+	message["oldvalue"] = pOldValue;
+	message["newvalue"] = g_pCVar->FindVar(var->GetName())->GetString();
+
+	std::thread sendMessage(std::bind(&WebSockets::SendGlobalMessage, g_WebSockets, message));
+	sendMessage.detach();
 }

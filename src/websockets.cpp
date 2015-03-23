@@ -2,7 +2,7 @@
  *  websockets.cpp
  *  ExternalExtensions project
  *
- *  Copyright (c) 2014 thesupremecommander
+ *  Copyright (c) 2015 thesupremecommander
  *  MIT License
  *  http://opensource.org/licenses/MIT
  *
@@ -10,30 +10,72 @@
 
 #include "websockets.h"
 
-void WebSockets::Run() {
+#include "dbg.h"
+
+WebSockets::WebSockets() {
+	port = new ConVar("externalextensions_port", "2006", FCVAR_NONE, "port to run the WebSockets server on");
+	start = new ConCommand("externalextensions_start", []() { g_WebSockets->Start(); }, "start the WebSocket server (if not already running)", FCVAR_NONE);
+	stop = new ConCommand("externalextensions_stop", []() { g_WebSockets->Stop(); }, "stop the WebSocket server (if already running)", FCVAR_NONE);
+
 	try {
+		server.init_asio();
+
 		server.set_open_handler(websocketpp::lib::bind(&WebSockets::OnOpen, this, websocketpp::lib::placeholders::_1));
 		server.set_close_handler(websocketpp::lib::bind(&WebSockets::OnClose, this, websocketpp::lib::placeholders::_1));
 		server.set_message_handler(websocketpp::lib::bind(&WebSockets::OnMessage, this, websocketpp::lib::placeholders::_1, websocketpp::lib::placeholders::_2));
 
-		server.init_asio();
-		server.listen(2006);
+		processor = websocketpp::lib::thread(websocketpp::lib::bind(&WebSockets::ProcessEvents, this));
+	}
+	catch (std::exception &e) {
+		Warning("%s\n", e.what());
+	}
+}
+
+void WebSockets::Start() {
+	try {
+		if (server.is_listening()) {
+			Msg("WebSockets server is already running.\n");
+
+			return;
+		}
+
+		server.reset();
+		server.listen(port->GetInt());
 		server.start_accept();
 
-		websocketpp::lib::thread processor(websocketpp::lib::bind(&WebSockets::ProcessEvents, this));
-
-		server.run();
-
-		processor.join();
+		runner = websocketpp::lib::thread(websocketpp::lib::bind(&websocketpp::server<websocketpp::config::asio>::run, &server));
 	}
-	catch (const std::exception & e) {
+	catch (std::exception &e) {
+		Warning("%s\n", e.what());
+	}
+}
+
+void WebSockets::Stop() {
+	try {
+		if (!server.is_listening()) {
+			Msg("WebSockets server is already not running.\n");
+
+			return;
+		}
+
+		server.stop_listening();
+
+		for (websocketpp::connection_hdl connection : currentConnections) {
+			try {
+				server.close(connection, websocketpp::close::status::going_away, "server shutting down");
+			}
+			catch (std::exception &e) {
+				Warning("%s\n", e.what());
+			}
+		}
+
+		runner.join();
+
+		server.stop();
+		server.reset();
+	}
+	catch (std::invalid_argument &e) {
 		Warning(e.what());
-	}
-	catch (websocketpp::lib::error_code e) {
-		Warning(e.message().c_str());
-	}
-	catch (...) {
-		Warning("other exception");
 	}
 }
 
@@ -168,8 +210,8 @@ void WebSockets::ProcessEvents() {
 
 			currentConnections.insert(action.associatedConnection);
 
-			for (auto iterator = connectHooks.begin(); iterator != connectHooks.end(); ++iterator) {
-				iterator->second(action.associatedConnection);
+			for (auto iterator : connectHooks) {
+				iterator.second(action.associatedConnection);
 			}
 		}
 		else if (action.type == ActionType_Disconnected) {
@@ -177,27 +219,27 @@ void WebSockets::ProcessEvents() {
 
 			currentConnections.erase(action.associatedConnection);
 
-			for (auto iterator = disconnectHooks.begin(); iterator != disconnectHooks.end(); ++iterator) {
-				iterator->second(action.associatedConnection);
+			for (auto iterator : disconnectHooks) {
+				iterator.second(action.associatedConnection);
 			}
 		}
 		else if (action.type == ActionType_IncomingMessage) {
 			websocketpp::lib::unique_lock<websocketpp::lib::mutex> lock(connectionLock);
 
-			for (auto iterator = messageHooks.begin(); iterator != messageHooks.end(); ++iterator) {
-				iterator->second(action.associatedConnection, action.message);
+			for (auto iterator : messageHooks) {
+				iterator.second(action.associatedConnection, action.message);
 			}
 		}
 		else if (action.type == ActionType_OutgoingPrivateMessage) {
 			websocketpp::lib::unique_lock<websocketpp::lib::mutex> lock(connectionLock);
 
 			Json::FastWriter writer;
-			websocketpp::lib::error_code error;
 
-			server.send(action.associatedConnection, writer.write(action.message), websocketpp::frame::opcode::text, error);
-
-			if (error) {
-				Warning(error.message().c_str());
+			try {
+				server.send(action.associatedConnection, writer.write(action.message), websocketpp::frame::opcode::text);
+			}
+			catch (std::exception &e) {
+				Warning("%s\n", e.what());
 			}
 		}
 		else if (action.type == ActionType_OutgoingGlobalMessage) {
@@ -206,16 +248,13 @@ void WebSockets::ProcessEvents() {
 			Json::FastWriter writer;
 			std::string payload = writer.write(action.message);
 
-			for (auto iterator = currentConnections.begin(); iterator != currentConnections.end(); ++iterator) {
-				websocketpp::lib::error_code error;
-
-				server.send(*iterator, payload, websocketpp::frame::opcode::text, error);
-
-				if (error) {
-					Warning(error.message().c_str());
+			for (websocketpp::connection_hdl connection : currentConnections) {
+				try {
+					server.send(connection, payload, websocketpp::frame::opcode::text);
 				}
-				
-				error.clear();
+				catch (std::exception &e) {
+					Warning("%s\n", e.what());
+				}
 			}
 		}
 

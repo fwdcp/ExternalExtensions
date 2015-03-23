@@ -2,7 +2,7 @@
  *  externalextensions.cpp
  *  ExternalExtensions project
  *
- *  Copyright (c) 2014 thesupremecommander
+ *  Copyright (c) 2015 thesupremecommander
  *  MIT License
  *  http://opensource.org/licenses/MIT
  *
@@ -10,42 +10,77 @@
 
 #include "externalextensions.h"
 
+#include "convar.h"
+
+#include "common.h"
+#include "ifaces.h"
+#include "modules.h"
+#include "websockets.h"
+
+#include "modules/console.h"
+#include "modules/gameinfo.h"
+
+ModuleManager *g_ModuleManager = nullptr;
+
 WebSockets *g_WebSockets = nullptr;
 
-Console *g_Console = nullptr;
-
-IVEngineClient *engine = NULL;
-
-//
 // The plugin is a static singleton that is exported as an interface
-//
 ExternalExtensionsPlugin g_ExternalExtensionsPlugin;
-EXPOSE_SINGLE_INTERFACE_GLOBALVAR(ExternalExtensionsPlugin, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_ExternalExtensionsPlugin );
+EXPOSE_SINGLE_INTERFACE_GLOBALVAR(ExternalExtensionsPlugin, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_ExternalExtensionsPlugin);
 
 ExternalExtensionsPlugin::ExternalExtensionsPlugin() {}
 ExternalExtensionsPlugin::~ExternalExtensionsPlugin() {}
 
 bool ExternalExtensionsPlugin::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory) {
+	PRINT_TAG();
+	ConColorMsg(Color(0, 255, 255, 255), "version %s | a Forward Command Post project (http://fwdcp.net)\n", PLUGIN_VERSION);
+
+	PRINT_TAG();
+	ConColorMsg(Color(255, 255, 0, 255), "Loading plugin...\n");
+
+	Interfaces::Load(interfaceFactory, gameServerFactory);
+
 	g_WebSockets = new WebSockets();
 
-	std::thread ws(&WebSockets::Run, g_WebSockets);
-	ws.detach();
+	g_ModuleManager = new ModuleManager();
 
-	ConnectTier1Libraries(&interfaceFactory, 1);
-	ConnectTier2Libraries(&interfaceFactory, 1);
-	ConnectTier3Libraries(&interfaceFactory, 1);
+	g_ModuleManager->LoadModule<Console>("Console");
+	g_ModuleManager->LoadModule<GameInfo>("Game Info");
 
-	engine = (IVEngineClient *)interfaceFactory(VENGINE_CLIENT_INTERFACE_VERSION, NULL);
+	ConVar_Register();
 
-	g_Console = new Console();
+	PRINT_TAG();
+	ConColorMsg(Color(0, 255, 0, 255), "Finished loading!\n");
 
 	return true;
 }
 
-void ExternalExtensionsPlugin::Unload(void) {}
+void ExternalExtensionsPlugin::Unload(void) {
+	PRINT_TAG();
+	ConColorMsg(Color(255, 255, 0, 255), "Unloading plugin...\n");
+
+	g_ModuleManager->UnloadAllModules();
+
+	ConVar_Unregister();
+	Interfaces::Unload();
+
+	PRINT_TAG();
+	ConColorMsg(Color(0, 255, 0, 255), "Finished unloading!\n");
+}
+
 void ExternalExtensionsPlugin::Pause(void) {}
 void ExternalExtensionsPlugin::UnPause(void) {}
-const char *ExternalExtensionsPlugin::GetPluginDescription(void) { return PLUGIN_DESC; }
+
+const char *ExternalExtensionsPlugin::GetPluginDescription(void) {
+	std::stringstream ss;
+	std::string desc;
+
+	ss << "ExternalExtensions " << PLUGIN_VERSION;
+	ss >> desc;
+
+	return desc.c_str();
+}
+
 void ExternalExtensionsPlugin::LevelInit(char const *pMapName) {}
 void ExternalExtensionsPlugin::ServerActivate(edict_t *pEdictList, int edictCount, int clientMax) {}
 void ExternalExtensionsPlugin::GameFrame(bool simulating) {}

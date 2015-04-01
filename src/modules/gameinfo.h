@@ -24,5 +24,5 @@ public:
 
 	void ReceiveMessage(websocketpp::connection_hdl connection, Json::Value message);
 private:
-	void ProcessGameInfo();
+	void GetGameInfo(websocketpp::connection_hdl connection);
 };

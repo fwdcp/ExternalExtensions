@@ -45,6 +45,7 @@ public:
 	void SendPrivateMessage(websocketpp::connection_hdl recipient, Json::Value message);
 	void SendGlobalMessage(Json::Value message);
 
+private:
 	typedef enum {
 		ActionType_Connected,
 		ActionType_Disconnected,
@@ -59,7 +60,6 @@ public:
 		Json::Value message;
 	} Action;
 
-private:
 	void OnOpen(websocketpp::connection_hdl connection);
 	void OnClose(websocketpp::connection_hdl connection);
 	void OnMessage(websocketpp::connection_hdl connection, websocketpp::server<websocketpp::config::asio>::message_ptr message);

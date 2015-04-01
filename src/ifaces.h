@@ -40,6 +40,7 @@ class Interfaces {
 		static CSteamAPIContext *pSteamAPIContext;
 
 		static bool steamLibrariesAvailable;
+		static bool vguiLibrariesAvailable;
 	private:
 		static CDllDemandLoader *pClientModule;
 };

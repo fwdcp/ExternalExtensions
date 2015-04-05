@@ -10,11 +10,13 @@
 
 #include "console.h"
 
+#include <functional>
 #include <thread>
 
 #include "cdll_int.h"
 
 #include "../common.h"
+#include "../gamethread.h"
 #include "../ifaces.h"
 #include "../websockets.h"
 
@@ -45,56 +47,28 @@ void Console::ReceiveMessage(websocketpp::connection_hdl connection, Json::Value
 		std::string command = message.get("command", "").asString();
 
 		if (!command.empty()) {
-			commandHistory[connection].push_back(command);
-			Interfaces::pEngineClient->ClientCmd_Unrestricted(command.c_str());
+			g_GameThreadHelper->AddCall(std::bind(&Console::ExecCommand, this, connection, command));
 		}
 	}
 	else if (messageType.compare("convarquery") == 0) {
 		std::string name = message.get("name", "").asString();
 
-		Json::Value message;
-		message["type"] = "convarqueryresult";
-		message["name"] = name;
-
-		ConVar *convar = g_pCVar->FindVar(name.c_str());
-
-		if (convar) {
-			message["exists"] = true;
-			message["help"] = convar->GetHelpText();
-			message["value"] = convar->GetString();
+		if (!name.empty()) {
+			g_GameThreadHelper->AddCall(std::bind(&Console::QueryConVar, this, connection, name));
 		}
-		else {
-			message["exists"] = false;
-		}
-
-		std::thread sendMessage(std::bind(&WebSockets::SendPrivateMessage, g_WebSockets, connection, message));
-		sendMessage.detach();
 	}
 	else if (messageType.compare("convarchange") == 0) {
 		std::string name = message.get("name", "").asString();
 		std::string value = message.get("value", "").asString();
 
-		ConVar *convar = g_pCVar->FindVar(name.c_str());
-
-		if (convar) {
-			convar->SetValue(value.c_str());
+		if (!name.empty()) {
+			g_GameThreadHelper->AddCall(std::bind(&Console::ChangeConVar, this, name, value));
 		}
 	}
 	else if (messageType.compare("autocomplete") == 0) {
 		std::string partial = message.get("partial", "").asString();
 
-		std::vector<std::string> autoCompleteResults = GetAutoComplete(connection, partial);
-
-		Json::Value message;
-		message["type"] = "autocompleteresults";
-		message["partial"] = partial;
-
-		for (std::string autoCompleteResult : autoCompleteResults) {
-			message["results"].append(autoCompleteResult);
-		}
-
-		std::thread sendMessage(std::bind(&WebSockets::SendPrivateMessage, g_WebSockets, connection, message));
-		sendMessage.detach();
+		g_GameThreadHelper->AddCall(std::bind(&Console::GetAutoComplete, this, connection, partial));
 	}
 }
 
@@ -132,7 +106,24 @@ void Console::DPrint(const char *pMessage) {
 	sendMessage.detach();
 }
 
-std::vector<std::string> Console::GetAutoComplete(websocketpp::connection_hdl connection, std::string partial) {
+void Console::ChangeConVar(std::string name, std::string value) {
+	ConVar *convar = g_pCVar->FindVar(name.c_str());
+
+	if (convar) {
+		convar->SetValue(value.c_str());
+	}
+}
+
+void Console::ExecCommand(websocketpp::connection_hdl connection, std::string command) {
+	commandHistory[connection].push_back(command);
+	Interfaces::pEngineClient->ClientCmd_Unrestricted(command.c_str());
+}
+
+void Console::GetAutoComplete(websocketpp::connection_hdl connection, std::string partial) {
+	Json::Value message;
+	message["type"] = "autocompleteresults";
+	message["partial"] = partial;
+
 	std::vector<std::string> results;
 
 	if (partial.length() == 0) {
@@ -170,7 +161,32 @@ std::vector<std::string> Console::GetAutoComplete(websocketpp::connection_hdl co
 		}
 	}
 
-	return results;
+	for (std::string result : results) {
+		message["results"].append(result);
+	}
+
+	std::thread sendMessage(std::bind(&WebSockets::SendPrivateMessage, g_WebSockets, connection, message));
+	sendMessage.detach();
+}
+
+void Console::QueryConVar(websocketpp::connection_hdl connection, std::string name) {
+	Json::Value message;
+	message["type"] = "convarqueryresult";
+	message["name"] = name;
+
+	ConVar *convar = g_pCVar->FindVar(name.c_str());
+
+	if (convar) {
+		message["exists"] = true;
+		message["help"] = convar->GetHelpText();
+		message["value"] = convar->GetString();
+	}
+	else {
+		message["exists"] = false;
+	}
+
+	std::thread sendMessage(std::bind(&WebSockets::SendPrivateMessage, g_WebSockets, connection, message));
+	sendMessage.detach();
 }
 
 void Console::OnConVarChange(IConVar *var, const char *pOldValue, float flOldValue) {

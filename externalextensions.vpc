@@ -38,6 +38,7 @@ $Project "ExternalExtensions"
 	{
 		$File	"src\entities.cpp"
 		$File	"src\externalextensions.cpp"
+		$File	"src\gamethread.cpp"
 		$File	"src\ifaces.cpp"
 		$File	"src\modules.cpp"
 		$File	"src\player.cpp"
@@ -46,6 +47,7 @@ $Project "ExternalExtensions"
 		$File	"src\modules\console.cpp"
 		$File	"src\modules\gameinfo.cpp"
 		$File	"$JSONCPP\jsoncpp.cpp"
+		$File	"$SRCDIR\public\vgui_controls\vgui_controls.cpp"
 	}
 	
 	$Folder	"Header Files"
@@ -55,6 +57,7 @@ $Project "ExternalExtensions"
 		$File	"src\exceptions.h"
 		$File	"src\externalextensions.h"
 		$File	"src\gamedata.h"
+		$File	"src\gamethread.h"
 		$File	"src\ifaces.h"
 		$File	"src\modules.h"
 		$File	"src\player.h"
@@ -70,5 +73,6 @@ $Project "ExternalExtensions"
 		$Lib tier1
 		$Lib tier2
 		$Lib tier3
+		$Lib vgui_controls
 	}
 }

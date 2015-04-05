@@ -36,6 +36,7 @@ IVRenderView *Interfaces::pRenderView = nullptr;
 CSteamAPIContext *Interfaces::pSteamAPIContext = nullptr;
 
 bool Interfaces::steamLibrariesAvailable = false;
+bool Interfaces::vguiLibrariesAvailable = false;
 
 CBaseEntityList *g_pEntityList;
 
@@ -43,6 +44,8 @@ void Interfaces::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn game
 	ConnectTier1Libraries(&interfaceFactory, 1);
 	ConnectTier2Libraries(&interfaceFactory, 1);
 	ConnectTier3Libraries(&interfaceFactory, 1);
+
+	vguiLibrariesAvailable = vgui::VGui_InitInterfacesList("externalextensions", &interfaceFactory, 1);
 	
 	pEngineClient = (IVEngineClient *)interfaceFactory(VENGINE_CLIENT_INTERFACE_VERSION, nullptr);
 	pGameEventManager = (IGameEventManager2 *)interfaceFactory(INTERFACEVERSION_GAMEEVENTSMANAGER2, nullptr);

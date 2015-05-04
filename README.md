@@ -6,6 +6,10 @@ plugin exposing an API to the Team Fortress 2 client
 Changelog
 ---------
 
+**0.1.1**
+* general
+  * fix crashes caused by changes outside of the game thread
+
 **0.1.0**
 * general
   * rewritten onto StatusSpec plugin base

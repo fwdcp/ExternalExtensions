@@ -13,6 +13,7 @@
 #include "convar.h"
 
 #include "common.h"
+#include "gamethread.h"
 #include "ifaces.h"
 #include "modules.h"
 #include "websockets.h"
@@ -22,6 +23,7 @@
 
 ModuleManager *g_ModuleManager = nullptr;
 
+GameThreadHelper *g_GameThreadHelper = nullptr;
 WebSockets *g_WebSockets = nullptr;
 
 // The plugin is a static singleton that is exported as an interface
@@ -40,6 +42,7 @@ bool ExternalExtensionsPlugin::Load(CreateInterfaceFn interfaceFactory, CreateIn
 
 	Interfaces::Load(interfaceFactory, gameServerFactory);
 
+	g_GameThreadHelper = new GameThreadHelper();
 	g_WebSockets = new WebSockets();
 
 	g_ModuleManager = new ModuleManager();

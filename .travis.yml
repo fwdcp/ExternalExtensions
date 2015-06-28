@@ -5,7 +5,7 @@ before_install:
 - sudo apt-get install -y g++-multilib python-dev libxml2-dev libxslt-dev libbz2-dev libboost-all-dev
 install:
 - git clone https://github.com/open-source-parsers/jsoncpp.git $TRAVIS_BUILD_DIR/../jsoncpp
-  && cd $TRAVIS_BUILD_DIR/../jsoncpp && python amalagate.py
+  && cd $TRAVIS_BUILD_DIR/../jsoncpp && python amalgamate.py
 - git clone https://github.com/zaphoyd/websocketpp.git $TRAVIS_BUILD_DIR/../websocketpp
 - git clone https://github.com/ValveSoftware/source-sdk-2013.git $TRAVIS_BUILD_DIR/../source-sdk-2013
   && ln -s $TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR/../source-sdk-2013/mp/src/utils/ExternalExtensions && cat $TRAVIS_BUILD_DIR/build_tools/project.vgc >> $TRAVIS_BUILD_DIR/../source-sdk-2013/mp/src/vpc_scripts/projects.vgc && cp $TRAVIS_BUILD_DIR/build_tools/createexternalextensions $TRAVIS_BUILD_DIR/../source-sdk-2013/mp/src && chmod +x $TRAVIS_BUILD_DIR/../source-sdk-2013/mp/src/createexternalextensions && cd $TRAVIS_BUILD_DIR/../source-sdk-2013/mp/src && ./createexternalextensions

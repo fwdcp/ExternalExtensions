@@ -22,6 +22,7 @@ $Configuration
 		$PreprocessorDefinitions			"$BASE;externalextensionsONLY;_MBCS;CLIENT_DLL;GLOWS_ENABLE;TF_CLIENT_DLL;TF_DLL;VERSION_SAFE_STEAM_API_INTERFACES"
 		$TreatWarningsAsErrors				"No (/WX-)"
 		$EnableC++Exceptions				"Yes (/EHsc)"
+		$GCC_ExtraCompilerFlags				"-lboost_system"
 	}
 
 	$Linker

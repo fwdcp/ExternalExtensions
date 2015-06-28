@@ -2,10 +2,8 @@ language: cpp
 
 before_install:
 - sudo apt-get update -qq
-- sudo apt-get install -y g++-multilib python-dev libxml2-dev libxslt-dev libbz2-dev
+- sudo apt-get install -y g++-multilib python-dev libxml2-dev libxslt-dev libbz2-dev libboost-all-dev
 install:
-- git clone --recursive https://github.com/boostorg/boost.git $TRAVIS_BUILD_DIR/../boost
-  && cd $TRAVIS_BUILD_DIR/../boost && ./bootstrap.sh --prefix=stage && ./b2 && ./b2 headers
 - git clone https://github.com/open-source-parsers/jsoncpp.git $TRAVIS_BUILD_DIR/../jsoncpp
   && cd $TRAVIS_BUILD_DIR/../jsoncpp && python amalagate.py
 - git clone https://github.com/zaphoyd/websocketpp.git $TRAVIS_BUILD_DIR/../websocketpp

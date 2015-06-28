@@ -4,14 +4,13 @@
 //	Project Script
 //-----------------------------------------------------------------------------
 
-$Macro PROJECTDIR		"."
-$Macro SRCDIR			"..\.."
-$Macro OUTBINDIR		".\addons"
-$Macro MMSOURCE_DEV		"..\..\..\..\..\metamod-source"
-$Macro BOOST			"..\..\..\..\..\..\boost"
-$Macro BOOST_LIB		"..\..\..\..\..\..\boost\stage\lib"
-$Macro JSONCPP			"..\..\..\..\..\jsoncpp\dist"
-$Macro WEBSOCKETPP		"..\..\..\..\..\websocketpp"
+$Macro PROJECTDIR	"."
+$Macro SRCDIR		"..\source-sdk-2013\mp\src"
+$Macro OUTBINDIR	".\addons"
+$Macro BOOST		"$SRCDIR\..\..\..\..\boost"
+$Macro BOOST_LIB	"$SRCDIR\..\..\..\..\boost\stage\lib"
+$Macro JSONCPP		"$SRCDIR\..\..\..\jsoncpp\dist"
+$Macro WEBSOCKETPP	"$SRCDIR\..\..\..\websocketpp"
 
 $Include "$SRCDIR\vpc_scripts\source_dll_base.vpc"
 
@@ -19,7 +18,7 @@ $Configuration
 {
 	$Compiler
 	{
-		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\game\client;$SRCDIR\game\shared;$SRCDIR\public;$MMSOURCE_DEV\core\sourcehook;$JSONCPP;$BOOST;$WEBSOCKETPP"
+		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\game\client;$SRCDIR\game\shared;$SRCDIR\public;$JSONCPP;$BOOST;$WEBSOCKETPP"
 		$PreprocessorDefinitions			"$BASE;externalextensionsONLY;_MBCS;CLIENT_DLL;GLOWS_ENABLE;TF_CLIENT_DLL;TF_DLL;VERSION_SAFE_STEAM_API_INTERFACES"
 		$TreatWarningsAsErrors				"No (/WX-)"
 		$EnableC++Exceptions				"Yes (/EHsc)"
@@ -49,7 +48,7 @@ $Project "ExternalExtensions"
 		$File	"$JSONCPP\jsoncpp.cpp"
 		$File	"$SRCDIR\public\vgui_controls\vgui_controls.cpp"
 	}
-	
+
 	$Folder	"Header Files"
 	{
 		$File	"src\common.h"
@@ -66,7 +65,7 @@ $Project "ExternalExtensions"
 		$File	"src\modules\console.h"
 		$File	"src\modules\gameinfo.h"
 	}
-	
+
 	$Folder	"Link Libraries"
 	{
 		$Lib steam_api

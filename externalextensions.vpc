@@ -70,10 +70,10 @@ $Project "ExternalExtensions"
 
 	$Folder	"Link Libraries"
 	{
-		$Lib steam_api
-		$Lib tier1
-		$Lib tier2
-		$Lib tier3
-		$Lib vgui_controls
+		$ImpLib	steam_api
+		$Lib	tier1
+		$Lib	tier2
+		$Lib	tier3
+		$Lib	vgui_controls
 	}
 }

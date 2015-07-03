@@ -10,11 +10,10 @@
 
 #include "entities.h"
 
-#include "minmax.h"
+#include "tier0/valve_minmax_on.h"
 #include "cdll_int.h"
 #include "client_class.h"
 #include "icliententity.h"
-#undef MINMAX_H
 #include "tier0/valve_minmax_off.h"
 
 #include "common.h"

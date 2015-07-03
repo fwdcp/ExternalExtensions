@@ -10,9 +10,8 @@
 
 #pragma once
 
-#include "minmax.h"
+#include "tier0/valve_minmax_on.h"
 #include "engine/iserverplugin.h"
-#undef MINMAX_H
 #include "tier0/valve_minmax_off.h"
 
 class ExternalExtensionsPlugin: public IServerPluginCallbacks

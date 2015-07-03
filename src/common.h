@@ -14,10 +14,9 @@
 #include <string>
 #include <vector>
 
-#include "minmax.h"
+#include "tier0/valve_minmax_on.h"
 #include "Color.h"
 #include "dbg.h"
-#undef MINMAX_H
 #include "tier0/valve_minmax_off.h"
 
 inline std::string ConvertTreeToString(std::vector<std::string> tree) {

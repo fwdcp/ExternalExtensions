@@ -12,10 +12,9 @@
 
 #include "json/json.h"
 
-#include "minmax.h"
+#include "tier0/valve_minmax_on.h"
 #include "Color.h"
 #include "icvar.h"
-#undef MINMAX_H
 #include "tier0/valve_minmax_off.h"
 
 #include "../modules.h"

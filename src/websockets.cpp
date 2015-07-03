@@ -10,9 +10,8 @@
 
 #include "websockets.h"
 
-#include "minmax.h"
+#include "tier0/valve_minmax_on.h"
 #include "dbg.h"
-#undef MINMAX_H
 #include "tier0/valve_minmax_off.h"
 
 WebSockets::WebSockets() {

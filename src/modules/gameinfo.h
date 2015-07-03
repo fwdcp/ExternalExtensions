@@ -12,11 +12,10 @@
 
 #include "tier0/valve_minmax_off.h"
 
-#include <websocketpp/config/asio_no_tls.hpp>
-
 #include "json/json.h"
 
 #include "../modules.h"
+#include "../websockets.h"
 
 class GameInfo : public Module {
 public:

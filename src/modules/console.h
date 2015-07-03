@@ -12,14 +12,13 @@
 
 #include "tier0/valve_minmax_off.h"
 
-#include <websocketpp/config/asio_no_tls.hpp>
-
 #include "json/json.h"
 
 #include "Color.h"
 #include "icvar.h"
 
 #include "../modules.h"
+#include "../websockets.h"
 
 class Console : public Module, public IConsoleDisplayFunc {
 public:

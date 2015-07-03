@@ -29,7 +29,6 @@
 #include "../ifaces.h"
 #include "../player.h"
 #include "../tfdefs.h"
-#include "../websockets.h"
 
 GameInfo::GameInfo(std::string name) : Module(name) {
 	g_WebSockets->RegisterMessageHook(std::bind(&GameInfo::ReceiveMessage, this, std::placeholders::_1, std::placeholders::_2));

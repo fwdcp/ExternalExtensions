@@ -13,8 +13,9 @@
 #include <functional>
 #include <thread>
 
-#include "tier0/valve_minmax_on.h"
+#include "minmax.h"
 #include "cdll_int.h"
+#undef MINMAX_H
 #include "tier0/valve_minmax_off.h"
 
 #include "../common.h"

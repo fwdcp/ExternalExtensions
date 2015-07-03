@@ -15,7 +15,7 @@
 
 #include <boost/asio.hpp>
 
-#include "tier0/valve_minmax_on.h"
+#include "minmax.h"
 #include "cbase.h"
 #include "c_baseentity.h"
 #include "cdll_int.h"
@@ -23,6 +23,7 @@
 #include "icliententity.h"
 #include "inetchannelinfo.h"
 #include "steam/steam_api.h"
+#undef MINMAX_H
 #include "tier0/valve_minmax_off.h"
 
 #include "../common.h"

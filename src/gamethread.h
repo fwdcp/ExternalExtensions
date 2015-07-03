@@ -12,9 +12,10 @@
 #include <mutex>
 #include <queue>
 
-#include "tier0/valve_minmax_on.h"
+#include "minmax.h"
 #include "vgui_controls/Panel.h"
 #undef null
+#undef MINMAX_H
 #include "tier0/valve_minmax_off.h"
 
 class GameThreadHelper : public vgui::Panel {

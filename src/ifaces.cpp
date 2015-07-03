@@ -10,7 +10,7 @@
 
 #include "ifaces.h"
 
-#include "tier0/valve_minmax_on.h"
+#include "minmax.h"
 #include "cbase.h"
 #include "cdll_int.h"
 #include "engine/ivmodelinfo.h"
@@ -23,6 +23,7 @@
 #include "teamplayroundbased_gamerules.h"
 #include "tier3/tier3.h"
 #include "vgui_controls/Controls.h"
+#undef MINMAX_H
 #include "tier0/valve_minmax_off.h"
 
 #include "exceptions.h"

@@ -10,8 +10,9 @@
 
 #pragma once
 
-#include "tier0/valve_minmax_on.h"
+#include "minmax.h"
 #include "ehandle.h"
+#undef MINMAX_H
 #include "tier0/valve_minmax_off.h"
 
 class C_BaseEntity;

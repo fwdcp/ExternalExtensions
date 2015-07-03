@@ -27,8 +27,9 @@
 
 #include <json/json.h>
 
-#include "tier0/valve_minmax_on.h"
+#include "minmax.h"
 #include "convar.h"
+#undef MINMAX_H
 #include "tier0/valve_minmax_off.h"
 
 class WebSockets {

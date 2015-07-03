@@ -1,7 +1,7 @@
 /*
  *  entities.h
  *  ExternalExtensions project
- *  
+ *
  *  Copyright (c) 2015 thesupremecommander
  *  MIT License
  *  http://opensource.org/licenses/MIT
@@ -9,6 +9,8 @@
  */
 
 #pragma once
+
+#include "tier0/valve_minmax_off.h"
 
 #include <unordered_map>
 #include <string>

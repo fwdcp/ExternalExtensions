@@ -1,7 +1,7 @@
 /*
  *  tfdefs.h
  *  ExternalExtensions project
- *  
+ *
  *  Copyright (c) 2015 thesupremecommander
  *  MIT License
  *  http://opensource.org/licenses/MIT
@@ -9,6 +9,8 @@
  */
 
 #pragma once
+
+#include "tier0/valve_minmax_off.h"
 
 #include <array>
 #include <map>
@@ -34,7 +36,7 @@ typedef enum {
 	TFTeam_Unassigned = 0,
 	TFTeam_Spectator = 1,
 	TFTeam_Red = 2,
-	TFTeam_Blue = 3	
+	TFTeam_Blue = 3
 } TFTeam;
 
 typedef enum {

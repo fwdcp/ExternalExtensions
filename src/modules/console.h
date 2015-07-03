@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include "tier0/valve_minmax_off.h"
+
 #include <websocketpp/config/asio_no_tls.hpp>
 
 #include "json/json.h"

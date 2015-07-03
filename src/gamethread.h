@@ -8,6 +8,8 @@
  *
  */
 
+#include "tier0/valve_minmax_off.h"
+
 #include <functional>
 #include <mutex>
 #include <queue>
@@ -22,7 +24,7 @@ public:
 	void AddCall(std::function<void()> call);
 
 	virtual void OnTick();
-	
+
 private:
 	std::queue<std::function<void()>> callQueue;
 	std::mutex callQueueLock;

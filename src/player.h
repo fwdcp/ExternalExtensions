@@ -10,7 +10,9 @@
 
 #pragma once
 
+#include "tier0/valve_minmax_on.h"
 #include "ehandle.h"
+#include "tier0/valve_minmax_off.h"
 
 class C_BaseEntity;
 class CSteamID;

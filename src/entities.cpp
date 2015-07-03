@@ -1,7 +1,7 @@
 /*
  *  entities.cpp
  *  ExternalExtensions project
- *  
+ *
  *  Copyright (c) 2015 thesupremecommander
  *  MIT License
  *  http://opensource.org/licenses/MIT
@@ -10,9 +10,11 @@
 
 #include "entities.h"
 
+#include "tier0/valve_minmax_on.h"
 #include "cdll_int.h"
 #include "client_class.h"
 #include "icliententity.h"
+#include "tier0/valve_minmax_off.h"
 
 #include "common.h"
 #include "exceptions.h"

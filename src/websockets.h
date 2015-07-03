@@ -10,8 +10,6 @@
 
 #pragma once
 
-#include "tier0/valve_minmax_off.h"
-
 #include <set>
 
 #define _WEBSOCKETPP_CPP11_THREAD_
@@ -29,7 +27,9 @@
 
 #include <json/json.h>
 
+#include "tier0/valve_minmax_on.h"
 #include "convar.h"
+#include "tier0/valve_minmax_off.h"
 
 class WebSockets {
 public:
@@ -66,7 +66,7 @@ private:
 	void OnClose(websocketpp::connection_hdl connection);
 	void OnMessage(websocketpp::connection_hdl connection, websocketpp::server<websocketpp::config::asio>::message_ptr message);
 	void ProcessEvents();
-	
+
 	websocketpp::server<websocketpp::config::asio> server;
 	websocketpp::lib::thread runner;
 	websocketpp::lib::thread processor;

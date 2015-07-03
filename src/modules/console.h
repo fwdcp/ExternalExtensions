@@ -10,12 +10,12 @@
 
 #pragma once
 
-#include "tier0/valve_minmax_off.h"
-
 #include "json/json.h"
 
+#include "tier0/valve_minmax_on.h"
 #include "Color.h"
 #include "icvar.h"
+#include "tier0/valve_minmax_off.h"
 
 #include "../modules.h"
 #include "../websockets.h"

@@ -10,14 +10,14 @@
 
 #pragma once
 
-#include "tier0/valve_minmax_off.h"
-
 #include <sstream>
 #include <string>
 #include <vector>
 
+#include "tier0/valve_minmax_on.h"
 #include "Color.h"
 #include "dbg.h"
+#include "tier0/valve_minmax_off.h"
 
 inline std::string ConvertTreeToString(std::vector<std::string> tree) {
 	std::stringstream ss;

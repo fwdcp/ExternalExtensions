@@ -12,6 +12,7 @@
 
 #include <cstdint>
 
+#include "tier0/valve_minmax_on.h"
 #include "cbase.h"
 #include "c_baseentity.h"
 #include "cdll_int.h"
@@ -19,6 +20,7 @@
 #include "icliententity.h"
 #include "icliententitylist.h"
 #include "steam/steam_api.h"
+#include "tier0/valve_minmax_off.h"
 
 #include "common.h"
 #include "entities.h"
@@ -304,7 +306,7 @@ std::string Player::GetName() const {
 			return playerInfo.name;
 		}
 	}
-	
+
 	return "";
 }
 
@@ -572,14 +574,14 @@ bool Player::CheckDependencies() {
 
 		conditionsRetrievalAvailable = false;
 	}
-		
+
 	if (!Entities::RetrieveClassPropOffset("CTFPlayer", { "_condition_bits" })) {
 		PRINT_TAG();
 		Warning("Required property _condition_bits for CTFPlayer for player helper class not available!\n");
 
 		conditionsRetrievalAvailable = false;
 	}
-		
+
 	if (!Entities::RetrieveClassPropOffset("CTFPlayer", { "m_nPlayerCondEx" })) {
 		PRINT_TAG();
 		Warning("Required property m_nPlayerCondEx for CTFPlayer for player helper class not available!\n");

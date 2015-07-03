@@ -8,14 +8,14 @@
  *
  */
 
-#include "tier0/valve_minmax_off.h"
-
 #include <functional>
 #include <mutex>
 #include <queue>
 
+#include "tier0/valve_minmax_on.h"
 #include "vgui_controls/Panel.h"
 #undef null
+#include "tier0/valve_minmax_off.h"
 
 class GameThreadHelper : public vgui::Panel {
 public:

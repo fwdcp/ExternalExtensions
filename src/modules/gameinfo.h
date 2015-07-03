@@ -10,8 +10,6 @@
 
 #pragma once
 
-#include "tier0/valve_minmax_off.h"
-
 #include "json/json.h"
 
 #include "../modules.h"

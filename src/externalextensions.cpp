@@ -10,7 +10,9 @@
 
 #include "externalextensions.h"
 
+#include "tier0/valve_minmax_on.h"
 #include "convar.h"
+#include "tier0/valve_minmax_off.h"
 
 #include "common.h"
 #include "gamethread.h"

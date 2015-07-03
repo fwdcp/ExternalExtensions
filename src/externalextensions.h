@@ -10,7 +10,9 @@
 
 #pragma once
 
+#include "tier0/valve_minmax_on.h"
 #include "engine/iserverplugin.h"
+#include "tier0/valve_minmax_off.h"
 
 class ExternalExtensionsPlugin: public IServerPluginCallbacks
 {

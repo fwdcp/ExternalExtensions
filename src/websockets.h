@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include "tier0/valve_minmax_off.h"
+
 #include <set>
 
 #define _WEBSOCKETPP_CPP11_THREAD_

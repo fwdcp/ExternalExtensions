@@ -5,8 +5,9 @@
 //-----------------------------------------------------------------------------
 
 $Macro PROJECTDIR	"."
-$Macro SRCDIR		"..\source-sdk-2013\mp\src"
 $Macro OUTBINDIR	".\addons"
+$Macro SRCDIR		"..\.."	[!$TRAVIS]
+$Macro SRCDIR		"..\source-sdk-2013\mp\src"	[$TRAVIS]
 $Macro BOOST		"$SRCDIR\..\..\..\..\boost"
 $Macro BOOST_LIB	"$SRCDIR\..\..\..\..\boost\stage\lib"
 $Macro JSONCPP		"$SRCDIR\..\..\..\jsoncpp\dist"

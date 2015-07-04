@@ -9,7 +9,7 @@ $Macro OUTBINDIR	".\addons"
 $Macro SRCDIR		"..\.."									[!$TRAVIS]
 $Macro SRCDIR		"..\source-sdk-2013\mp\src"				[$TRAVIS]
 $Macro BOOST		"$SRCDIR\..\..\..\boost"
-$Macro BOOST_LIB	"$SRCDIR\..\..\..\boost\stage\lib"
+$Macro BOOST_LIB	"$BOOST\stage\lib"
 $Macro JSONCPP		"$SRCDIR\..\..\..\jsoncpp\dist"
 $Macro WEBSOCKETPP	"$SRCDIR\..\..\..\websocketpp"
 
@@ -29,7 +29,6 @@ $Configuration
 	{
 		$AdditionalDependencies			"$BASE odbc32.lib odbccp32.lib"
 		$AdditionalLibraryDirectories	"$BASE;$BOOST_LIB"
-		$GCC_ExtraLinkerFlags			"-lboost_system"				[$LINUX]
 	}
 }
 
@@ -70,6 +69,7 @@ $Project "ExternalExtensions"
 
 	$Folder	"Link Libraries"
 	{
+		$Lib	boost_system
 		$ImpLib	steam_api
 		$Lib	tier1
 		$Lib	tier2

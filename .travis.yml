@@ -6,7 +6,7 @@ before_install:
 - sudo aptitude install -y g++-multilib libbz2-dev:i386
 install:
 - git clone --recursive https://github.com/boostorg/boost.git $TRAVIS_BUILD_DIR/../boost
-  && cd $TRAVIS_BUILD_DIR/../boost && ./bootstrap.sh && ./b2 --with-asio --with-system address-model=32 headers stage
+  && cd $TRAVIS_BUILD_DIR/../boost && ./bootstrap.sh && ./b2 --with-system address-model=32 headers stage
 - git clone https://github.com/open-source-parsers/jsoncpp.git $TRAVIS_BUILD_DIR/../jsoncpp
   && cd $TRAVIS_BUILD_DIR/../jsoncpp && python amalgamate.py
 - git clone https://github.com/zaphoyd/websocketpp.git $TRAVIS_BUILD_DIR/../websocketpp

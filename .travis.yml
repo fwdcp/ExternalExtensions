@@ -2,8 +2,8 @@ language: cpp
 
 before_install:
 - sudo apt-get update
-- sudo apt-get dist-upgrade -y
-- sudo apt-get install -y g++-multilib libbz2-dev:i386
+- sudo apt-get dist-upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
+- sudo apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" g++-multilib libbz2-dev:i386
 install:
 - git clone --recursive https://github.com/boostorg/boost.git $TRAVIS_BUILD_DIR/../boost
   && cd $TRAVIS_BUILD_DIR/../boost && ./bootstrap.sh && ./b2 --without-python address-model=32 stage

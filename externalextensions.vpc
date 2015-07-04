@@ -30,7 +30,6 @@ $Configuration
 	{
 		$AdditionalDependencies			"$BASE odbc32.lib odbccp32.lib"
 		$AdditionalLibraryDirectories	"$BASE;$BOOST_LIB"
-		$GCC_ExtraLinkerFlags			"-L$BOOST_LIB -lboost_system"
 	}
 }
 
@@ -71,6 +70,7 @@ $Project "ExternalExtensions"
 
 	$Folder	"Link Libraries"
 	{
+		$Lib	"$BOOST_LIB\libboost_system"	[$LINUX]
 		$ImpLib	steam_api
 		$Lib	tier1
 		$Lib	tier2

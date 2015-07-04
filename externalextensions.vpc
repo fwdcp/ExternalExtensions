@@ -19,17 +19,18 @@ $Configuration
 {
 	$Compiler
 	{
-		$AdditionalIncludeDirectories	"$PROJECTDIR\src\overrides;$BASE;$SRCDIR\game\client;$SRCDIR\game\shared;$SRCDIR\public;$JSONCPP;$BOOST;$WEBSOCKETPP"
+		$AdditionalIncludeDirectories	"$PROJECTDIR\src\overrides;$BASE;$SRCDIR\game\client;$SRCDIR\game\shared;$SRCDIR\public;$BOOST;$JSONCPP;$WEBSOCKETPP"
 		$PreprocessorDefinitions		"$BASE;externalextensionsONLY;_MBCS;CLIENT_DLL;GLOWS_ENABLE;TF_CLIENT_DLL;TF_DLL;VERSION_SAFE_STEAM_API_INTERFACES"
 		$TreatWarningsAsErrors			"No (/WX-)"
 		$EnableC++Exceptions			"Yes (/EHsc)"
-		$GCC_ExtraCompilerFlags			"-std=c++0x -D_WEBSOCKETPP_CPP11_STL_"	[$LINUX]
+		$GCC_ExtraCompilerFlags			"-std=c++0x -D_WEBSOCKETPP_CPP11_STL_"
 	}
 
 	$Linker
 	{
 		$AdditionalDependencies			"$BASE odbc32.lib odbccp32.lib"
 		$AdditionalLibraryDirectories	"$BASE;$BOOST_LIB"
+		$GCC_ExtraLinkerFlags			"-lboost_system"
 	}
 }
 
@@ -70,7 +71,6 @@ $Project "ExternalExtensions"
 
 	$Folder	"Link Libraries"
 	{
-		$Lib	boost_system
 		$ImpLib	steam_api
 		$Lib	tier1
 		$Lib	tier2

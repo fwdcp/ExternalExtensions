@@ -1,5 +1,5 @@
 /**
- *  gamedata.h
+ *  platform.h
  *  ExternalExtensions project
  *
  *  Copyright (c) 2015 thesupremecommander
@@ -9,6 +9,14 @@
  */
 
 #pragma once
+
+#if defined _WIN32
+#define _WEBSOCKETPP_CPP11_THREAD_
+#define _WEBSOCKETPP_CPP11_FUNCTIONAL_
+#define _WEBSOCKETPP_CPP11_SYSTEM_ERROR_
+#define _WEBSOCKETPP_CPP11_RANDOM_DEVICE_
+#define _WEBSOCKETPP_CPP11_MEMORY_
+#endif
 
 // client DLL info
 #if defined _WIN32

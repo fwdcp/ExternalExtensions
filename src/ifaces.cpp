@@ -26,7 +26,7 @@
 #include "tier0/valve_minmax_off.h"
 
 #include "exceptions.h"
-#include "gamedata.h"
+#include "platform.h"
 
 IBaseClientDLL *Interfaces::pClientDLL = nullptr;
 IClientEntityList *Interfaces::pClientEntityList = nullptr;

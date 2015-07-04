@@ -26,9 +26,9 @@
 #include "tier0/valve_minmax_off.h"
 
 #include "../common.h"
-#include "../gamedata.h"
 #include "../gamethread.h"
 #include "../ifaces.h"
+#include "../platform.h"
 #include "../player.h"
 #include "../tfdefs.h"
 

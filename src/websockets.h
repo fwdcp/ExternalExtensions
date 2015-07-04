@@ -12,11 +12,7 @@
 
 #include <set>
 
-#define _WEBSOCKETPP_CPP11_THREAD_
-#define _WEBSOCKETPP_CPP11_FUNCTIONAL_
-#define _WEBSOCKETPP_CPP11_SYSTEM_ERROR_
-#define _WEBSOCKETPP_CPP11_RANDOM_DEVICE_
-#define _WEBSOCKETPP_CPP11_MEMORY_
+#include "platform.h"
 
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>

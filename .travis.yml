@@ -12,5 +12,5 @@ install:
 - wget http://media.steampowered.com/client/runtime/steam-runtime-sdk_latest.tar.xz -O $TRAVIS_BUILD_DIR/../steam-runtime-sdk_latest.tar.xz && tar xvf $TRAVIS_BUILD_DIR/../steam-runtime-sdk_latest.tar.xz -C $TRAVIS_BUILD_DIR/..
   && cd $TRAVIS_BUILD_DIR/../steam-runtime-sdk_* && ./setup.sh --auto-update && export STEAM_RUNTIME_HOST_ARCH=$(dpkg --print-architecture) && export STEAM_RUNTIME_TARGET_ARCH=i386 && export STEAM_RUNTIME_ROOT=$PWD/runtime/$STEAM_RUNTIME_TARGET_ARCH && export PATH="$PWD/bin:$PATH" && ln -s /usr/include/boost $STEAM_RUNTIME_ROOT/usr/include/boost
 script:
-- ulimit -Sv 131072
+- ulimit -Sm 1048576
 - cd $TRAVIS_BUILD_DIR/../source-sdk-2013/mp/src && make -f ExternalExtensions.mak

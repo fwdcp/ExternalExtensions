@@ -2,10 +2,10 @@ language: cpp
 
 before_install:
 - sudo apt-get update -qq
-- sudo apt-get install -y g++-multilib
+- sudo apt-get install -y g++-multilib libbz2-dev
 install:
 - git clone --recursive https://github.com/boostorg/boost.git $TRAVIS_BUILD_DIR/../boost
-  && cd $TRAVIS_BUILD_DIR/../boost && ./bootstrap.sh --prefix=stage && ./b2 address-model=32
+  && cd $TRAVIS_BUILD_DIR/../boost && ./bootstrap.sh && ./b2 --without-python address-model=32 stage
 - git clone https://github.com/open-source-parsers/jsoncpp.git $TRAVIS_BUILD_DIR/../jsoncpp
   && cd $TRAVIS_BUILD_DIR/../jsoncpp && python amalgamate.py
 - git clone https://github.com/zaphoyd/websocketpp.git $TRAVIS_BUILD_DIR/../websocketpp

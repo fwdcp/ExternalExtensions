@@ -30,7 +30,7 @@ $Configuration
 	{
 		$AdditionalDependencies			"$BASE odbc32.lib odbccp32.lib"
 		$AdditionalLibraryDirectories	"$BASE;$BOOST_LIB"
-		$GCC_ExtraLinkerFlags			"-lboost_system"
+		$GCC_ExtraLinkerFlags			"-L$BOOST_LIB -lboost_system"
 	}
 }
 

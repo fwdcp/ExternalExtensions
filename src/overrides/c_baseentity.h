@@ -581,7 +581,7 @@ public:
 
 	// ID Target handling
 	virtual bool					IsValidIDTarget( void ) { return false; }
-	virtual const char				*GetIDString( void ) { return ""; } = 0;
+	virtual const char				*GetIDString( void ) { return ""; };
 
 	// See CSoundEmitterSystem
 	virtual void ModifyEmitSoundParams( EmitSound_t &params ) = 0;
@@ -831,7 +831,7 @@ public:
 	virtual void					DecalTrace( trace_t *pTrace, char const *decalName ) = 0;
 	virtual void					ImpactTrace( trace_t *pTrace, int iDamageType, const char *pCustomImpactName ) = 0;
 
-	virtual bool					ShouldPredict( void ) { return false; } = 0;
+	virtual bool					ShouldPredict( void ) { return false; };
 	// interface function pointers
 	void							(C_BaseEntity::*m_pfnThink)(void);
 	virtual void					Think( void )
@@ -1003,8 +1003,8 @@ public:
 	bool							IsWorld() { return entindex() == 0; }
 	/////////////////
 
-	virtual bool					IsPlayer( void ) const { return false; } = 0;
-	virtual bool					IsBaseCombatCharacter( void ) { return false; } = 0;
+	virtual bool					IsPlayer( void ) const { return false; };
+	virtual bool					IsBaseCombatCharacter( void ) { return false; };
 	virtual C_BaseCombatCharacter	*MyCombatCharacterPointer( void ) { return NULL; }
 	virtual bool					IsNPC( void ) { return false; }
 	C_AI_BaseNPC					*MyNPCPointer( void );

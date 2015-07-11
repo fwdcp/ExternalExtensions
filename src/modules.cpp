@@ -8,8 +8,6 @@
  *
  */
 
-#pragma once
-
 #include "modules.h"
 
 #include "common.h"

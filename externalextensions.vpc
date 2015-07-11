@@ -71,6 +71,7 @@ $Project "ExternalExtensions"
 	$Folder	"Link Libraries"
 	{
 		$Lib	"$BOOST_LIB\libboost_system"	[$LINUX]
+		$Lib	mathlib							[$LINUX]
 		$ImpLib	steam_api
 		$Lib	tier1
 		$Lib	tier2

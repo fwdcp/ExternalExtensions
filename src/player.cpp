@@ -284,7 +284,7 @@ TFClassType Player::GetClass() const {
 
 int Player::GetHealth() const {
 	if (IsValid()) {
-		return dynamic_cast<C_BaseEntity *>(playerEntity.Get())->GetHealth();
+		return ((C_BaseEntity *) playerEntity.Get())->GetHealth();
 	}
 
 	return 0;
@@ -292,7 +292,7 @@ int Player::GetHealth() const {
 
 int Player::GetMaxHealth() const {
 	if (IsValid()) {
-		return dynamic_cast<C_BaseEntity *>(playerEntity.Get())->GetMaxHealth();
+		return ((C_BaseEntity *) playerEntity.Get())->GetMaxHealth();
 	}
 
 	return 0;
@@ -312,7 +312,7 @@ std::string Player::GetName() const {
 
 int Player::GetObserverMode() const {
 	if (IsValid()) {
-		return dynamic_cast<C_BasePlayer *>(playerEntity.Get())->GetObserverMode();
+		return ((C_BasePlayer *) playerEntity.Get())->GetObserverMode();
 	}
 
 	return OBS_MODE_NONE;
@@ -320,7 +320,7 @@ int Player::GetObserverMode() const {
 
 C_BaseEntity *Player::GetObserverTarget() const {
 	if (IsValid()) {
-		return dynamic_cast<C_BasePlayer *>(playerEntity.Get())->GetObserverTarget();
+		return ((C_BasePlayer *) playerEntity.Get())->GetObserverTarget();
 	}
 
 	return playerEntity->GetBaseEntity();
@@ -366,7 +366,7 @@ CSteamID Player::GetSteamID() const {
 
 TFTeam Player::GetTeam() const {
 	if (IsValid()) {
-		TFTeam team = (TFTeam)dynamic_cast<C_BaseEntity *>(playerEntity.Get())->GetTeamNumber();
+		TFTeam team = (TFTeam)((C_BaseEntity *) playerEntity.Get())->GetTeamNumber();
 
 		return team;
 	}
@@ -388,7 +388,7 @@ int Player::GetUserID() const {
 
 bool Player::IsAlive() const {
 	if (IsValid()) {
-		return dynamic_cast<C_BaseEntity *>(playerEntity.Get())->IsAlive();
+		return ((C_BaseEntity *) playerEntity.Get())->IsAlive();
 	}
 
 	return false;

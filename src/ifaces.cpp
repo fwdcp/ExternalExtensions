@@ -64,7 +64,7 @@ void Interfaces::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn game
 	pSteamAPIContext = new CSteamAPIContext();
 	steamLibrariesAvailable = SteamAPI_InitSafe() && pSteamAPIContext->Init();
 
-	g_pEntityList = dynamic_cast<CBaseEntityList *>(Interfaces::pClientEntityList);
+	g_pEntityList = (CBaseEntityList *) Interfaces::pClientEntityList;
 }
 
 void Interfaces::Unload() {

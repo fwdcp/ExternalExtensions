@@ -10,6 +10,7 @@
 
 #pragma once
 
+// enable C++11 on Windows
 #if defined _WIN32
 #define _WEBSOCKETPP_CPP11_THREAD_
 #define _WEBSOCKETPP_CPP11_FUNCTIONAL_

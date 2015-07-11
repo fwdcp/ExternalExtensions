@@ -1,8 +1,10 @@
 language: cpp
 
-before_install:
-- sudo apt-get update
-- sudo apt-get install -y g++-multilib
+addons:
+  apt:
+    packages:
+    - g++-multilib
+
 install:
 - git clone --recursive --depth=1 https://github.com/boostorg/boost.git $TRAVIS_BUILD_DIR/../boost
   && cd $TRAVIS_BUILD_DIR/../boost && ./bootstrap.sh && ./b2 --with-system address-model=32 headers stage

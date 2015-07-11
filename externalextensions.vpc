@@ -49,6 +49,7 @@ $Project "ExternalExtensions"
 		$File	"src\modules\gameinfo.cpp"
 		$File	"$JSONCPP\jsoncpp.cpp"
 		$File	"$SRCDIR\public\vgui_controls\vgui_controls.cpp"
+		$File	"$SRCDIR\game\client\particles_new.cpp"				[$LINUX]
 	}
 
 	$Folder	"Header Files"

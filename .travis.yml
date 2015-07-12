@@ -22,7 +22,7 @@ script:
 
 before_deploy:
 - cd $TRAVIS_BUILD_DIR/..
-- zip ExternalExtensions-$TRAVIS_TAG-linux.zip ExternalExtensions/addons/ExternalExtensions.so ExternalExtensions/addons/ExternalExtensions.vdf ExternalExtensions/LICENSE ExternalExtensions/addons/README.md
+- zip ExternalExtensions-$TRAVIS_TAG-linux.zip ExternalExtensions/addons/ExternalExtensions.so ExternalExtensions/addons/ExternalExtensions.vdf ExternalExtensions/LICENSE ExternalExtensions/README.md
 deploy:
   provider: releases
   api_key:

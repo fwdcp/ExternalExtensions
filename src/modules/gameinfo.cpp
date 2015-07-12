@@ -21,6 +21,7 @@
 #include "icliententity.h"
 #include "inetchannelinfo.h"
 #include "steam/steam_api.h"
+#include "toolframework/ienginetool.h"
 #include "tier0/valve_minmax_off.h"
 
 #include "../common.h"
@@ -40,6 +41,13 @@ bool GameInfo::CheckDependencies(std::string name) {
 	if (!Interfaces::pEngineClient) {
 		PRINT_TAG();
 		Warning("Required interface IVEngineClient for module %s not available!\n", name.c_str());
+
+		ready = false;
+	}
+
+	if (!Interfaces::pEngineTool) {
+		PRINT_TAG();
+		Warning("Required interface IEngineTool for module %s not available!\n", name.c_str());
 
 		ready = false;
 	}
@@ -78,13 +86,13 @@ void GameInfo::GetGameInfo(websocketpp::connection_hdl connection) {
 	message["client"]["name"] = Interfaces::pSteamAPIContext->SteamFriends()->GetPersonaName();
 	message["client"]["steam"] = Json::valueToString(steamID.ConvertToUint64());
 
-	message["ingame"] = Interfaces::pEngineClient->IsInGame();
+	message["ingame"] = Interfaces::pEngineTool->IsInGame();
 
 	if (Interfaces::pEngineClient->IsInGame()) {
 		if (Interfaces::pEngineClient->IsPlayingDemo()) {
 			message["context"]["type"] = "demo";
 			message["context"]["tick"] = Interfaces::pEngineClient->GetDemoPlaybackTick();
-			message["context"]["paused"] = Interfaces::pEngineClient->IsPaused();
+			message["context"]["paused"] = Interfaces::pEngineTool->IsGamePaused();
 		}
 		else {
 			if (Interfaces::pEngineClient->IsHLTV()) {
@@ -94,12 +102,6 @@ void GameInfo::GetGameInfo(websocketpp::connection_hdl connection) {
 				message["context"]["type"] = "game";
 			}
 
-			ConVar *password = g_pCVar->FindVar("password");
-
-			if (password) {
-				message["context"]["password"] = password->GetString();
-			}
-
 			INetChannelInfo *channel = Interfaces::pEngineClient->GetNetChannelInfo();
 
 			if (channel) {
@@ -107,7 +109,7 @@ void GameInfo::GetGameInfo(websocketpp::connection_hdl connection) {
 			}
 		}
 
-		message["map"] = Interfaces::pEngineClient->GetLevelName();
+		message["map"] = Interfaces::pEngineTool->GetCurrentMap();
 		message["players"] = Json::Value(Json::arrayValue);
 
 		for (Player player : Player::Iterable()) {

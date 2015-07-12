@@ -20,6 +20,7 @@
 #include "ivrenderview.h"
 #include "steam/steam_api.h"
 #include "tier3/tier3.h"
+#include "toolframework/ienginetool.h"
 #include "vgui_controls/Controls.h"
 #include "tier0/valve_minmax_off.h"
 
@@ -28,8 +29,9 @@
 
 IBaseClientDLL *Interfaces::pClientDLL = nullptr;
 IClientEntityList *Interfaces::pClientEntityList = nullptr;
-CDllDemandLoader *Interfaces::pClientModule = nullptr;
 IVEngineClient *Interfaces::pEngineClient = nullptr;
+IEngineTool *Interfaces::pEngineTool = nullptr;
+IFileSystem *Interfaces::pFileSystem = nullptr;
 IGameEventManager2 *Interfaces::pGameEventManager = nullptr;
 IVModelInfoClient *Interfaces::pModelInfoClient = nullptr;
 IVRenderView *Interfaces::pRenderView = nullptr;
@@ -45,16 +47,16 @@ void Interfaces::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn game
 	ConnectTier2Libraries(&interfaceFactory, 1);
 	ConnectTier3Libraries(&interfaceFactory, 1);
 
-	vguiLibrariesAvailable = vgui::VGui_InitInterfacesList("externalextensions", &interfaceFactory, 1);
+	vguiLibrariesAvailable = vgui::VGui_InitInterfacesList("ExternalExtensions", &interfaceFactory, 1);
 
 	pEngineClient = (IVEngineClient *)interfaceFactory(VENGINE_CLIENT_INTERFACE_VERSION, nullptr);
+	pEngineTool = (IEngineTool *)interfaceFactory(VENGINETOOL_INTERFACE_VERSION, nullptr);
 	pGameEventManager = (IGameEventManager2 *)interfaceFactory(INTERFACEVERSION_GAMEEVENTSMANAGER2, nullptr);
 	pModelInfoClient = (IVModelInfoClient *)interfaceFactory(VMODELINFO_CLIENT_INTERFACE_VERSION, nullptr);
 	pRenderView = (IVRenderView *)interfaceFactory(VENGINE_RENDERVIEW_INTERFACE_VERSION, nullptr);
 
-	pClientModule = new CDllDemandLoader(CLIENT_MODULE_FILE);
-
-	CreateInterfaceFn gameClientFactory = pClientModule->GetFactory();
+	CreateInterfaceFn gameClientFactory;
+	pEngineTool->GetClientFactory(gameClientFactory);
 
 	pClientDLL = (IBaseClientDLL*)gameClientFactory(CLIENT_DLL_INTERFACE_VERSION, nullptr);
 	pClientEntityList = (IClientEntityList*)gameClientFactory(VCLIENTENTITYLIST_INTERFACE_VERSION, nullptr);
@@ -62,7 +64,33 @@ void Interfaces::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn game
 	pSteamAPIContext = new CSteamAPIContext();
 	steamLibrariesAvailable = SteamAPI_InitSafe() && pSteamAPIContext->Init();
 
-	g_pEntityList = (CBaseEntityList *) Interfaces::pClientEntityList;
+	g_pEntityList = (CBaseEntityList *)Interfaces::pClientEntityList;
+
+	char dll[MAX_PATH];
+	bool steam;
+	if (FileSystem_GetFileSystemDLLName(dll, sizeof(dll), steam) == FS_OK) {
+		CFSLoadModuleInfo fsLoadModuleInfo;
+		fsLoadModuleInfo.m_bSteam = steam;
+		fsLoadModuleInfo.m_pFileSystemDLLName = dll;
+		fsLoadModuleInfo.m_ConnectFactory = interfaceFactory;
+
+		if (FileSystem_LoadFileSystemModule(fsLoadModuleInfo) == FS_OK) {
+			CFSMountContentInfo fsMountContentInfo;
+			fsMountContentInfo.m_bToolsMode = fsLoadModuleInfo.m_bToolsMode;
+			fsMountContentInfo.m_pDirectoryName = fsLoadModuleInfo.m_GameInfoPath;
+			fsMountContentInfo.m_pFileSystem = fsLoadModuleInfo.m_pFileSystem;
+
+			if (FileSystem_MountContent(fsMountContentInfo) == FS_OK) {
+				CFSSearchPathsInit fsSearchPathsInit;
+				fsSearchPathsInit.m_pDirectoryName = fsLoadModuleInfo.m_GameInfoPath;
+				fsSearchPathsInit.m_pFileSystem = fsLoadModuleInfo.m_pFileSystem;
+
+				if (FileSystem_LoadSearchPaths(fsSearchPathsInit) == FS_OK) {
+					Interfaces::pFileSystem = fsLoadModuleInfo.m_pFileSystem;
+				}
+			}
+		}
+	}
 }
 
 void Interfaces::Unload() {
@@ -72,12 +100,11 @@ void Interfaces::Unload() {
 
 	pSteamAPIContext->Clear();
 
-	pClientModule->Unload();
-	pClientModule = nullptr;
-
 	pClientDLL = nullptr;
 	pClientEntityList = nullptr;
 	pEngineClient = nullptr;
+	pEngineTool = nullptr;
+	pFileSystem = nullptr;
 	pGameEventManager = nullptr;
 	pRenderView = nullptr;
 }

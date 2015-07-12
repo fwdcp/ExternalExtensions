@@ -6,7 +6,7 @@ plugin exposing an API to the Team Fortress 2 client
 Changelog
 ---------
 
-# WIP
+# 0.1.2
 * general
   * ported to Linux
 

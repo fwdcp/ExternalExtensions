@@ -4,14 +4,14 @@
 //	Project Script
 //-----------------------------------------------------------------------------
 
-$Macro PROJECTDIR		"."
-$Macro SRCDIR			"..\.."
-$Macro OUTBINDIR		".\addons"
-$Macro MMSOURCE_DEV		"..\..\..\..\..\metamod-source"
-$Macro BOOST			"..\..\..\..\..\..\boost"
-$Macro BOOST_LIB		"..\..\..\..\..\..\boost\stage\lib"
-$Macro JSONCPP			"..\..\..\..\..\jsoncpp\dist"
-$Macro WEBSOCKETPP		"..\..\..\..\..\websocketpp"
+$Macro PROJECTDIR	"."
+$Macro OUTBINDIR	".\addons"
+$Macro SRCDIR		"..\.."									[!$TRAVIS]
+$Macro SRCDIR		"..\source-sdk-2013\mp\src"				[$TRAVIS]
+$Macro BOOST		"$SRCDIR\..\..\..\boost"
+$Macro BOOST_LIB	"$BOOST\stage\lib"
+$Macro JSONCPP		"$SRCDIR\..\..\..\jsoncpp\dist"
+$Macro WEBSOCKETPP	"$SRCDIR\..\..\..\websocketpp"
 
 $Include "$SRCDIR\vpc_scripts\source_dll_base.vpc"
 
@@ -19,16 +19,17 @@ $Configuration
 {
 	$Compiler
 	{
-		$AdditionalIncludeDirectories		"$BASE;$SRCDIR\game\client;$SRCDIR\game\shared;$SRCDIR\public;$MMSOURCE_DEV\core\sourcehook;$JSONCPP;$BOOST;$WEBSOCKETPP"
-		$PreprocessorDefinitions			"$BASE;externalextensionsONLY;_MBCS;CLIENT_DLL;GLOWS_ENABLE;TF_CLIENT_DLL;TF_DLL;VERSION_SAFE_STEAM_API_INTERFACES"
-		$TreatWarningsAsErrors				"No (/WX-)"
-		$EnableC++Exceptions				"Yes (/EHsc)"
+		$AdditionalIncludeDirectories	"$PROJECTDIR\src\overrides;$BASE;$SRCDIR\game\client;$SRCDIR\game\shared;$SRCDIR\public;$BOOST;$JSONCPP;$WEBSOCKETPP"
+		$PreprocessorDefinitions		"$BASE;externalextensionsONLY;_MBCS;CLIENT_DLL;GLOWS_ENABLE;TF_CLIENT_DLL;TF_DLL;VERSION_SAFE_STEAM_API_INTERFACES"
+		$TreatWarningsAsErrors			"No (/WX-)"
+		$EnableC++Exceptions			"Yes (/EHsc)"
+		$GCC_ExtraCompilerFlags			"-std=c++0x -D_WEBSOCKETPP_CPP11_STL_"
 	}
 
 	$Linker
 	{
-		$AdditionalDependencies				"$BASE odbc32.lib odbccp32.lib"
-		$AdditionalLibraryDirectories		"$BASE;$BOOST_LIB"
+		$AdditionalDependencies			"$BASE odbc32.lib odbccp32.lib"
+		$AdditionalLibraryDirectories	"$BASE;$BOOST_LIB"
 	}
 }
 
@@ -49,30 +50,31 @@ $Project "ExternalExtensions"
 		$File	"$JSONCPP\jsoncpp.cpp"
 		$File	"$SRCDIR\public\vgui_controls\vgui_controls.cpp"
 	}
-	
+
 	$Folder	"Header Files"
 	{
 		$File	"src\common.h"
 		$File	"src\entities.h"
 		$File	"src\exceptions.h"
 		$File	"src\externalextensions.h"
-		$File	"src\gamedata.h"
 		$File	"src\gamethread.h"
 		$File	"src\ifaces.h"
 		$File	"src\modules.h"
+		$File	"src\platform.h"
 		$File	"src\player.h"
 		$File	"src\tfdefs.h"
 		$File	"src\websockets.h"
 		$File	"src\modules\console.h"
 		$File	"src\modules\gameinfo.h"
 	}
-	
+
 	$Folder	"Link Libraries"
 	{
-		$Lib steam_api
-		$Lib tier1
-		$Lib tier2
-		$Lib tier3
-		$Lib vgui_controls
+		$Lib	"$BOOST_LIB\libboost_system"	[$LINUX]
+		$ImpLib	steam_api
+		$Lib	tier1
+		$Lib	tier2
+		$Lib	tier3
+		$Lib	vgui_controls
 	}
 }

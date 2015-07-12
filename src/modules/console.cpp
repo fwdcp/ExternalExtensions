@@ -13,12 +13,13 @@
 #include <functional>
 #include <thread>
 
+#include "tier0/valve_minmax_on.h"
 #include "cdll_int.h"
+#include "tier0/valve_minmax_off.h"
 
 #include "../common.h"
 #include "../gamethread.h"
 #include "../ifaces.h"
-#include "../websockets.h"
 
 Console::Console(std::string name) : Module(name) {
 	g_pCVar->InstallGlobalChangeCallback([](IConVar *var, const char *pOldValue, float flOldValue) { g_ModuleManager->GetModule<Console>("Console")->OnConVarChange(var, pOldValue, flOldValue); });

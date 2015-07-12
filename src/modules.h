@@ -17,7 +17,7 @@
 
 class Module {
 public:
-	virtual ~Module() = default;
+	virtual ~Module() {};
 
 	static bool CheckDependencies(std::string name) { return true; };
 protected:

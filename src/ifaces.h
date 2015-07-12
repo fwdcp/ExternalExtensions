@@ -1,7 +1,7 @@
 /**
  *  ifaces.h
  *  ExternalExtensions project
- *  
+ *
  *  Copyright (c) 2015 thesupremecommander
  *  MIT License
  *  http://opensource.org/licenses/MIT
@@ -10,7 +10,9 @@
 
 #pragma once
 
+#include "tier0/valve_minmax_on.h"
 #include "interface.h"
+#include "tier0/valve_minmax_off.h"
 
 class C_HLTVCamera;
 class C_TeamplayRoundBasedRules;

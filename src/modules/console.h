@@ -10,14 +10,15 @@
 
 #pragma once
 
-#include <websocketpp/config/asio_no_tls.hpp>
-
 #include "json/json.h"
 
+#include "tier0/valve_minmax_on.h"
 #include "Color.h"
 #include "icvar.h"
+#include "tier0/valve_minmax_off.h"
 
 #include "../modules.h"
+#include "../websockets.h"
 
 class Console : public Module, public IConsoleDisplayFunc {
 public:

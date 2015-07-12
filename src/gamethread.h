@@ -12,8 +12,10 @@
 #include <mutex>
 #include <queue>
 
+#include "tier0/valve_minmax_on.h"
 #include "vgui_controls/Panel.h"
 #undef null
+#include "tier0/valve_minmax_off.h"
 
 class GameThreadHelper : public vgui::Panel {
 public:
@@ -22,7 +24,7 @@ public:
 	void AddCall(std::function<void()> call);
 
 	virtual void OnTick();
-	
+
 private:
 	std::queue<std::function<void()>> callQueue;
 	std::mutex callQueueLock;

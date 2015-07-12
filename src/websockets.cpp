@@ -10,7 +10,9 @@
 
 #include "websockets.h"
 
+#include "tier0/valve_minmax_on.h"
 #include "dbg.h"
+#include "tier0/valve_minmax_off.h"
 
 WebSockets::WebSockets() {
 	port = new ConVar("externalextensions_port", "2006", FCVAR_NONE, "port to run the WebSockets server on");
@@ -204,7 +206,7 @@ void WebSockets::ProcessEvents() {
 		}
 
 		Action action = actions.front();
-		
+
 		if (action.type == ActionType_Connected) {
 			websocketpp::lib::unique_lock<websocketpp::lib::mutex> lock(connectionLock);
 

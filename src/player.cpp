@@ -648,7 +648,7 @@ bool Player::CheckDependencies() {
 		ready = false;
 	}
 
-	for (int i = 0; i <= MAX_PLAYERS, i++) {
+	for (int i = 0; i <= MAX_PLAYERS; i++) {
 		char offset[4];
 		GetPropIndexString(i, offset);
 

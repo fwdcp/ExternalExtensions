@@ -17,6 +17,7 @@
 #include "tier0/valve_minmax_on.h"
 #include "Color.h"
 #include "dbg.h"
+#include "strtools.h"
 #include "tier0/valve_minmax_off.h"
 
 inline void GetPropIndexString(int index, char string[]) {

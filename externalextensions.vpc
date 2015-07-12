@@ -48,6 +48,7 @@ $Project "ExternalExtensions"
 		$File	"src\modules\console.cpp"
 		$File	"src\modules\gameinfo.cpp"
 		$File	"$JSONCPP\jsoncpp.cpp"
+		$File	"$SRCDIR\game\shared\entitylist_base.cpp"
 		$File	"$SRCDIR\public\filesystem_init.cpp"
 		$File	"$SRCDIR\public\vgui_controls\vgui_controls.cpp"
 	}

@@ -19,7 +19,6 @@
 #include "igameevents.h"
 #include "ivrenderview.h"
 #include "steam/steam_api.h"
-#include "teamplayroundbased_gamerules.h"
 #include "tier3/tier3.h"
 #include "vgui_controls/Controls.h"
 #include "tier0/valve_minmax_off.h"

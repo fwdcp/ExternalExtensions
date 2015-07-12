@@ -4,6 +4,7 @@ addons:
   apt:
     packages:
     - g++-multilib
+    - zip
 
 install:
 - git clone -q --depth 1 https://github.com/boostorg/boost.git $TRAVIS_BUILD_DIR/../boost && git submodule --quiet update --init --recursive
@@ -18,3 +19,17 @@ install:
 script:
 - ulimit -Sm 262144
 - cd $TRAVIS_BUILD_DIR/../source-sdk-2013/mp/src && make -f ExternalExtensions.mak
+
+before_deploy:
+- cd $TRAVIS_BUILD_DIR/..
+- zip ExternalExtensions-$TRAVIS_TAG-linux.zip ExternalExtensions/addons/ExternalExtensions.so ExternalExtensions/addons/ExternalExtensions.vdf ExternalExtensions/LICENSE ExternalExtensions/addons/README.md
+deploy:
+  provider: releases
+  api_key:
+    secure: PaTfNln8WPQ7aSxhvDSga+Xpi9B98zbYmyGBaEQofHTWzs9kCWQ1w4MianvFuwDd0nsbF1ZEdf0MA/2JPP1YvyqnNtyBxNTd7Nwg5rfVW1lwvinMSrzwPKBywTGR1a/n2dLBFZDMr8ik8gwPAGF5RUl+X+KyrKOFuZSm3h0nNqc=
+  file: $TRAVIS_BUILD_DIR/../ExternalExtensions-$TRAVIS_TAG-linux.zip
+  skip_cleanup: true
+  on:
+    repo: fwdcp/ExternalExtensions
+    tags: true
+    all_branches: true

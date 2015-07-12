@@ -10,6 +10,8 @@ cache:
   directories:
     - $TRAVIS_BUILD_DIR/../steam-runtime-sdk_*
 
+sudo: false
+
 install:
 - git clone -q --depth 1 https://github.com/boostorg/boost.git $TRAVIS_BUILD_DIR/../boost && cd $TRAVIS_BUILD_DIR/../boost && git submodule --quiet update --init --recursive
   && cd $TRAVIS_BUILD_DIR/../boost && ./bootstrap.sh && ./b2 --with-system -d 0 address-model=32 headers stage

@@ -8,7 +8,7 @@ addons:
 
 cache:
   directories:
-    - $TRAVIS_BUILD_DIR/../steam-runtime-sdk_*
+    - $TRAVIS_BUILD_DIR/../steam-runtime-sdk
 
 sudo: false
 
@@ -19,8 +19,8 @@ install:
   && cd $TRAVIS_BUILD_DIR/../jsoncpp && python amalgamate.py
 - git clone -q --depth 1 https://github.com/zaphoyd/websocketpp.git $TRAVIS_BUILD_DIR/../websocketpp
 - git clone -q --depth 1 https://github.com/ValveSoftware/source-sdk-2013.git $TRAVIS_BUILD_DIR/../source-sdk-2013
-- wget http://media.steampowered.com/client/runtime/steam-runtime-sdk_latest.tar.xz -O $TRAVIS_BUILD_DIR/../steam-runtime-sdk_latest.tar.xz && tar xvf $TRAVIS_BUILD_DIR/../steam-runtime-sdk_latest.tar.xz -C $TRAVIS_BUILD_DIR/..
-  && cd $TRAVIS_BUILD_DIR/../steam-runtime-sdk_* && ./setup.sh --auto-update && export STEAM_RUNTIME_HOST_ARCH=$(dpkg --print-architecture) && export STEAM_RUNTIME_TARGET_ARCH=i386 && export STEAM_RUNTIME_ROOT=$PWD/runtime/$STEAM_RUNTIME_TARGET_ARCH && export PATH="$PWD/bin:$PATH"
+- wget http://media.steampowered.com/client/runtime/steam-runtime-sdk_latest.tar.xz -O $TRAVIS_BUILD_DIR/../steam-runtime-sdk_latest.tar.xz && tar xvf $TRAVIS_BUILD_DIR/../steam-runtime-sdk_latest.tar.xz -C $TRAVIS_BUILD_DIR/.. && mv $TRAVIS_BUILD_DIR/../steam-runtime-sdk_* $TRAVIS_BUILD_DIR/../steam-runtime-sdk
+  && cd $TRAVIS_BUILD_DIR/../steam-runtime-sdk && ./setup.sh --auto-update && export STEAM_RUNTIME_HOST_ARCH=$(dpkg --print-architecture) && export STEAM_RUNTIME_TARGET_ARCH=i386 && export STEAM_RUNTIME_ROOT=$PWD/runtime/$STEAM_RUNTIME_TARGET_ARCH && export PATH="$PWD/bin:$PATH"
 - ln -s $TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR/../source-sdk-2013/mp/src/utils/ExternalExtensions && cat $TRAVIS_BUILD_DIR/build_tools/project.vgc >> $TRAVIS_BUILD_DIR/../source-sdk-2013/mp/src/vpc_scripts/projects.vgc && cd $TRAVIS_BUILD_DIR/../source-sdk-2013/mp/src && devtools/bin/vpc +ExternalExtensions /mksln ExternalExtensions /define:TRAVIS
 script:
 - ulimit -Sm 262144

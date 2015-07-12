@@ -14,8 +14,15 @@
 #include <string>
 #include <vector>
 
+#include "tier0/valve_minmax_on.h"
 #include "Color.h"
 #include "dbg.h"
+#include "strtools.h"
+#include "tier0/valve_minmax_off.h"
+
+inline void GetPropIndexString(int index, char string[]) {
+	V_snprintf(string, sizeof(string), "%03i", index);
+}
 
 inline std::string ConvertTreeToString(std::vector<std::string> tree) {
 	std::stringstream ss;

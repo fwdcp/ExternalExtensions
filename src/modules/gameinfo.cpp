@@ -15,21 +15,20 @@
 
 #include <boost/asio.hpp>
 
-#include "cbase.h"
-#include "c_baseentity.h"
+#include "tier0/valve_minmax_on.h"
 #include "cdll_int.h"
 #include "dbg.h"
 #include "icliententity.h"
 #include "inetchannelinfo.h"
 #include "steam/steam_api.h"
+#include "tier0/valve_minmax_off.h"
 
 #include "../common.h"
-#include "../gamedata.h"
 #include "../gamethread.h"
 #include "../ifaces.h"
+#include "../platform.h"
 #include "../player.h"
 #include "../tfdefs.h"
-#include "../websockets.h"
 
 GameInfo::GameInfo(std::string name) : Module(name) {
 	g_WebSockets->RegisterMessageHook(std::bind(&GameInfo::ReceiveMessage, this, std::placeholders::_1, std::placeholders::_2));
@@ -116,21 +115,15 @@ void GameInfo::GetGameInfo(websocketpp::connection_hdl connection) {
 				Json::Value playerJson;
 				playerJson["index"] = player->entindex();
 
-				if (Player::localPlayerCheckAvailable) {
-					playerJson["local"] = player.IsLocalPlayer();
-				}
+				playerJson["local"] = player.IsLocalPlayer();
 
-				if (Player::nameRetrievalAvailable) {
-					playerJson["name"] = player.GetName();
-				}
+				playerJson["name"] = player.GetName();
 
-				if (Player::steamIDRetrievalAvailable) {
-					playerJson["steam"] = Json::valueToString(player.GetSteamID().ConvertToUint64());
-				}
+				playerJson["steam"] = Json::valueToString(player.GetSteamID().ConvertToUint64());
 
 				playerJson["obsmode"] = player.GetObserverMode();
 				if (player.GetObserverTarget()) {
-					C_BaseEntity *targetEntity = player.GetObserverTarget();
+					IClientEntity *targetEntity = player.GetObserverTarget();
 					playerJson["obstarget"] = targetEntity->entindex();
 				}
 
@@ -155,42 +148,38 @@ void GameInfo::GetGameInfo(websocketpp::connection_hdl connection) {
 				playerJson["health"] = player.GetHealth();
 				playerJson["maxhealth"] = player.GetMaxHealth();
 
-				if (Player::classRetrievalAvailable) {
-					TFClassType playerClass = player.GetClass();
+				TFClassType playerClass = player.GetClass();
 
-					if (playerClass == TFClass_Scout) {
-						playerJson["class"] = "scout";
-					}
-					else if (playerClass == TFClass_Soldier) {
-						playerJson["class"] = "soldier";
-					}
-					else if (playerClass == TFClass_Pyro) {
-						playerJson["class"] = "pyro";
-					}
-					else if (playerClass == TFClass_DemoMan) {
-						playerJson["class"] = "demoman";
-					}
-					else if (playerClass == TFClass_Heavy) {
-						playerJson["class"] = "heavyweapons";
-					}
-					else if (playerClass == TFClass_Engineer) {
-						playerJson["class"] = "engineer";
-					}
-					else if (playerClass == TFClass_Medic) {
-						playerJson["class"] = "medic";
-					}
-					else if (playerClass == TFClass_Sniper) {
-						playerJson["class"] = "sniper";
-					}
-					else if (playerClass == TFClass_Spy) {
-						playerJson["class"] = "spy";
-					}
+				if (playerClass == TFClass_Scout) {
+					playerJson["class"] = "scout";
+				}
+				else if (playerClass == TFClass_Soldier) {
+					playerJson["class"] = "soldier";
+				}
+				else if (playerClass == TFClass_Pyro) {
+					playerJson["class"] = "pyro";
+				}
+				else if (playerClass == TFClass_DemoMan) {
+					playerJson["class"] = "demoman";
+				}
+				else if (playerClass == TFClass_Heavy) {
+					playerJson["class"] = "heavyweapons";
+				}
+				else if (playerClass == TFClass_Engineer) {
+					playerJson["class"] = "engineer";
+				}
+				else if (playerClass == TFClass_Medic) {
+					playerJson["class"] = "medic";
+				}
+				else if (playerClass == TFClass_Sniper) {
+					playerJson["class"] = "sniper";
+				}
+				else if (playerClass == TFClass_Spy) {
+					playerJson["class"] = "spy";
 				}
 
-				if (Player::conditionsRetrievalAvailable) {
-					for (int i = 0; i < 128; i++) {
-						playerJson["condition"][i] = player.CheckCondition((TFCond)i);
-					}
+				for (int i = 0; i < 128; i++) {
+					playerJson["condition"][i] = player.CheckCondition((TFCond)i);
 				}
 
 				message["players"].append(playerJson);

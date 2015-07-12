@@ -1,0 +1,35 @@
+language: cpp
+
+addons:
+  apt:
+    packages:
+    - g++-multilib
+    - zip
+
+install:
+- git clone -q --depth 1 https://github.com/boostorg/boost.git $TRAVIS_BUILD_DIR/../boost && cd $TRAVIS_BUILD_DIR/../boost && git submodule --quiet update --init --recursive
+  && cd $TRAVIS_BUILD_DIR/../boost && ./bootstrap.sh && ./b2 --with-system -d 0 address-model=32 headers stage
+- git clone -q --depth 1 https://github.com/open-source-parsers/jsoncpp.git $TRAVIS_BUILD_DIR/../jsoncpp
+  && cd $TRAVIS_BUILD_DIR/../jsoncpp && python amalgamate.py
+- git clone -q --depth 1 https://github.com/zaphoyd/websocketpp.git $TRAVIS_BUILD_DIR/../websocketpp
+- git clone -q --depth 1 https://github.com/ValveSoftware/source-sdk-2013.git $TRAVIS_BUILD_DIR/../source-sdk-2013
+- wget http://media.steampowered.com/client/runtime/steam-runtime-sdk_latest.tar.xz -O $TRAVIS_BUILD_DIR/../steam-runtime-sdk_latest.tar.xz && tar xvf $TRAVIS_BUILD_DIR/../steam-runtime-sdk_latest.tar.xz -C $TRAVIS_BUILD_DIR/..
+  && cd $TRAVIS_BUILD_DIR/../steam-runtime-sdk_* && ./setup.sh --auto-update && export STEAM_RUNTIME_HOST_ARCH=$(dpkg --print-architecture) && export STEAM_RUNTIME_TARGET_ARCH=i386 && export STEAM_RUNTIME_ROOT=$PWD/runtime/$STEAM_RUNTIME_TARGET_ARCH && export PATH="$PWD/bin:$PATH"
+- ln -s $TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR/../source-sdk-2013/mp/src/utils/ExternalExtensions && cat $TRAVIS_BUILD_DIR/build_tools/project.vgc >> $TRAVIS_BUILD_DIR/../source-sdk-2013/mp/src/vpc_scripts/projects.vgc && cd $TRAVIS_BUILD_DIR/../source-sdk-2013/mp/src && devtools/bin/vpc +ExternalExtensions /mksln ExternalExtensions /define:TRAVIS
+script:
+- ulimit -Sm 262144
+- cd $TRAVIS_BUILD_DIR/../source-sdk-2013/mp/src && make -f ExternalExtensions.mak
+
+before_deploy:
+- cd $TRAVIS_BUILD_DIR/..
+- zip ExternalExtensions-$TRAVIS_TAG-linux.zip ExternalExtensions/addons/ExternalExtensions.so ExternalExtensions/addons/ExternalExtensions.vdf ExternalExtensions/LICENSE ExternalExtensions/addons/README.md
+deploy:
+  provider: releases
+  api_key:
+    secure: PaTfNln8WPQ7aSxhvDSga+Xpi9B98zbYmyGBaEQofHTWzs9kCWQ1w4MianvFuwDd0nsbF1ZEdf0MA/2JPP1YvyqnNtyBxNTd7Nwg5rfVW1lwvinMSrzwPKBywTGR1a/n2dLBFZDMr8ik8gwPAGF5RUl+X+KyrKOFuZSm3h0nNqc=
+  file: $TRAVIS_BUILD_DIR/../ExternalExtensions-$TRAVIS_TAG-linux.zip
+  skip_cleanup: true
+  on:
+    repo: fwdcp/ExternalExtensions
+    tags: true
+    all_branches: true

@@ -12,11 +12,7 @@
 
 #include <set>
 
-#define _WEBSOCKETPP_CPP11_THREAD_
-#define _WEBSOCKETPP_CPP11_FUNCTIONAL_
-#define _WEBSOCKETPP_CPP11_SYSTEM_ERROR_
-#define _WEBSOCKETPP_CPP11_RANDOM_DEVICE_
-#define _WEBSOCKETPP_CPP11_MEMORY_
+#include "platform.h"
 
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
@@ -27,7 +23,9 @@
 
 #include <json/json.h>
 
+#include "tier0/valve_minmax_on.h"
 #include "convar.h"
+#include "tier0/valve_minmax_off.h"
 
 class WebSockets {
 public:
@@ -64,7 +62,7 @@ private:
 	void OnClose(websocketpp::connection_hdl connection);
 	void OnMessage(websocketpp::connection_hdl connection, websocketpp::server<websocketpp::config::asio>::message_ptr message);
 	void ProcessEvents();
-	
+
 	websocketpp::server<websocketpp::config::asio> server;
 	websocketpp::lib::thread runner;
 	websocketpp::lib::thread processor;

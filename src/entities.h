@@ -1,7 +1,7 @@
 /*
  *  entities.h
  *  ExternalExtensions project
- *  
+ *
  *  Copyright (c) 2015 thesupremecommander
  *  MIT License
  *  http://opensource.org/licenses/MIT

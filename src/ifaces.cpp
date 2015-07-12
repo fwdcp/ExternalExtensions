@@ -11,7 +11,6 @@
 #include "ifaces.h"
 
 #include "tier0/valve_minmax_on.h"
-#include "cbase.h"
 #include "cdll_int.h"
 #include "engine/ivmodelinfo.h"
 #include "entitylist_base.h"

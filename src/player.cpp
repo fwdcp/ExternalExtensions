@@ -13,12 +13,10 @@
 #include <cstdint>
 
 #include "tier0/valve_minmax_on.h"
-#include "cbase.h"
-#include "c_baseentity.h"
 #include "cdll_int.h"
-#include "globalvars_base.h"
 #include "icliententity.h"
 #include "icliententitylist.h"
+#include "shareddefs.h"
 #include "steam/steam_api.h"
 #include "tier0/valve_minmax_off.h"
 
@@ -284,7 +282,7 @@ TFClassType Player::GetClass() const {
 
 int Player::GetHealth() const {
 	if (IsValid()) {
-		return ((C_BaseEntity *) playerEntity.Get())->GetHealth();
+		return *Entities::GetEntityProp<int *>(playerEntity.Get(), { "m_iHealth" });
 	}
 
 	return 0;
@@ -292,7 +290,29 @@ int Player::GetHealth() const {
 
 int Player::GetMaxHealth() const {
 	if (IsValid()) {
-		return ((C_BaseEntity *) playerEntity.Get())->GetMaxHealth();
+		static IClientEntity *tfPlayerResource = nullptr;
+
+		if (!tfPlayerResource || !Entities::CheckEntityBaseclass(tfPlayerResource, "TFPlayerResource")) {
+			tfPlayerResource = nullptr;
+
+			int lastEntity = Interfaces::pClientEntityList->GetHighestEntityIndex();
+			for (int i = 0; i <= lastEntity; i++) {
+				IClientEntity *entity = Interfaces::pClientEntityList->GetClientEntity(i);
+
+				if (entity && Entities::CheckEntityBaseclass(entity, "TFPlayerResource")) {
+					tfPlayerResource = entity;
+
+					break;
+				}
+			}
+		}
+
+		if (tfPlayerResource) {
+			char offset[4];
+			GetPropIndexString(playerEntity->entindex(), offset);
+
+			return *Entities::GetEntityProp<int *>(tfPlayerResource, { "m_iMaxHealth", offset });
+		}
 	}
 
 	return 0;
@@ -312,18 +332,22 @@ std::string Player::GetName() const {
 
 int Player::GetObserverMode() const {
 	if (IsValid()) {
-		return ((C_BasePlayer *) playerEntity.Get())->GetObserverMode();
+		return *Entities::GetEntityProp<int *>(playerEntity.Get(), { "m_iObserverMode" });
 	}
 
 	return OBS_MODE_NONE;
 }
 
-C_BaseEntity *Player::GetObserverTarget() const {
+IClientEntity *Player::GetObserverTarget() const {
 	if (IsValid()) {
-		return ((C_BasePlayer *) playerEntity.Get())->GetObserverTarget();
+		CBaseHandle *entityHandle = Entities::GetEntityProp<CBaseHandle *>(playerEntity.Get(), { "m_hObserverTarget" });
+
+		if (entityHandle->IsValid()) {
+			return dynamic_cast<IClientEntity *>(entityHandle->Get());
+		}
 	}
 
-	return playerEntity->GetBaseEntity();
+	return playerEntity;
 }
 
 Vector Player::GetPosition() const {
@@ -366,9 +390,7 @@ CSteamID Player::GetSteamID() const {
 
 TFTeam Player::GetTeam() const {
 	if (IsValid()) {
-		TFTeam team = (TFTeam)((C_BaseEntity *) playerEntity.Get())->GetTeamNumber();
-
-		return team;
+		return (TFTeam) *Entities::GetEntityProp<int *>(playerEntity.Get(), { "m_iTeamNum" });
 	}
 
 	return TFTeam_Unassigned;
@@ -388,7 +410,7 @@ int Player::GetUserID() const {
 
 bool Player::IsAlive() const {
 	if (IsValid()) {
-		return ((C_BaseEntity *) playerEntity.Get())->IsAlive();
+		return *Entities::GetEntityProp<char *>(playerEntity.Get(), { "m_lifeState" }) == LIFE_ALIVE;
 	}
 
 	return false;
@@ -527,14 +549,6 @@ Player::Iterator Player::Iterable::end() {
 	return Player::end();
 }
 
-bool Player::classRetrievalAvailable = false;
-bool Player::comparisonAvailable = false;
-bool Player::conditionsRetrievalAvailable = false;
-bool Player::localPlayerCheckAvailable = false;
-bool Player::nameRetrievalAvailable = false;
-bool Player::steamIDRetrievalAvailable = false;
-bool Player::userIDRetrievalAvailable = false;
-
 bool Player::CheckDependencies() {
 	bool ready = true;
 
@@ -545,22 +559,11 @@ bool Player::CheckDependencies() {
 		ready = false;
 	}
 
-	classRetrievalAvailable = true;
-	comparisonAvailable = true;
-	conditionsRetrievalAvailable = true;
-	localPlayerCheckAvailable = true;
-	nameRetrievalAvailable = true;
-	steamIDRetrievalAvailable = true;
-	userIDRetrievalAvailable = true;
-
 	if (!Interfaces::pEngineClient) {
 		PRINT_TAG();
-		Warning("Interface IVEngineClient for player helper class not available (required for retrieving certain info)!\n");
+		Warning("Interface IVEngineClient for player helper class not available!\n");
 
-		localPlayerCheckAvailable = false;
-		nameRetrievalAvailable = false;
-		steamIDRetrievalAvailable = false;
-		userIDRetrievalAvailable = false;
+		ready = false;
 	}
 
 	if (!Interfaces::steamLibrariesAvailable) {
@@ -572,43 +575,89 @@ bool Player::CheckDependencies() {
 		PRINT_TAG();
 		Warning("Required property m_nPlayerCond for CTFPlayer for player helper class not available!\n");
 
-		conditionsRetrievalAvailable = false;
+		ready = false;
 	}
 
 	if (!Entities::RetrieveClassPropOffset("CTFPlayer", { "_condition_bits" })) {
 		PRINT_TAG();
 		Warning("Required property _condition_bits for CTFPlayer for player helper class not available!\n");
 
-		conditionsRetrievalAvailable = false;
+		ready = false;
 	}
 
 	if (!Entities::RetrieveClassPropOffset("CTFPlayer", { "m_nPlayerCondEx" })) {
 		PRINT_TAG();
 		Warning("Required property m_nPlayerCondEx for CTFPlayer for player helper class not available!\n");
 
-		conditionsRetrievalAvailable = false;
+		ready = false;
 	}
 
 	if (!Entities::RetrieveClassPropOffset("CTFPlayer", { "m_nPlayerCondEx2" })) {
 		PRINT_TAG();
 		Warning("Required property m_nPlayerCondEx2 for CTFPlayer for player helper class not available!\n");
 
-		conditionsRetrievalAvailable = false;
+		ready = false;
 	}
 
 	if (!Entities::RetrieveClassPropOffset("CTFPlayer", { "m_nPlayerCondEx3" })) {
 		PRINT_TAG();
 		Warning("Required property m_nPlayerCondEx3 for CTFPlayer for player helper class not available!\n");
 
-		conditionsRetrievalAvailable = false;
+		ready = false;
 	}
 
 	if (!Entities::RetrieveClassPropOffset("CTFPlayer", { "m_iClass" })) {
 		PRINT_TAG();
 		Warning("Required property m_iClass for CTFPlayer for player helper class not available!\n");
 
-		classRetrievalAvailable = false;
-		comparisonAvailable = false;
+		ready = false;
+	}
+
+	if (!Entities::RetrieveClassPropOffset("CTFPlayer", { "m_lifeState" })) {
+		PRINT_TAG();
+		Warning("Required property m_lifeState for CTFPlayer for player helper class not available!\n");
+
+		ready = false;
+	}
+
+	if (!Entities::RetrieveClassPropOffset("CTFPlayer", { "m_iObserverMode" })) {
+		PRINT_TAG();
+		Warning("Required property m_iObserverMode for CTFPlayer for player helper class not available!\n");
+
+		ready = false;
+	}
+
+	if (!Entities::RetrieveClassPropOffset("CTFPlayer", { "m_hObserverTarget" })) {
+		PRINT_TAG();
+		Warning("Required property m_hObserverTarget for CTFPlayer for player helper class not available!\n");
+
+		ready = false;
+	}
+
+	if (!Entities::RetrieveClassPropOffset("CTFPlayer", { "m_iHealth" })) {
+		PRINT_TAG();
+		Warning("Required property m_iHealth for CTFPlayer for player helper class not available!\n");
+
+		ready = false;
+	}
+
+	if (!Entities::RetrieveClassPropOffset("CTFPlayer", { "m_iTeamNum" })) {
+		PRINT_TAG();
+		Warning("Required property m_iHealth for CTFPlayer for player helper class not available!\n");
+
+		ready = false;
+	}
+
+	for (int i = 0; i <= MAX_PLAYERS, i++) {
+		char offset[4];
+		GetPropIndexString(i, offset);
+
+		if (!Entities::RetrieveClassPropOffset("CTFPlayerResource", { "m_iMaxHealth", offset })) {
+			PRINT_TAG();
+			Warning("Required property array m_iMaxHealth for CTFPlayerResource for player helper class not available!\n");
+
+			ready = false;
+		}
 	}
 
 	return ready;

@@ -67,7 +67,7 @@ public:
 	int GetMaxHealth() const;
 	std::string GetName() const;
 	int GetObserverMode() const;
-	C_BaseEntity *GetObserverTarget() const;
+	IClientEntity *GetObserverTarget() const;
 	Vector GetPosition() const;
 	CSteamID GetSteamID() const;
 	TFTeam GetTeam() const;
@@ -108,13 +108,6 @@ public:
 	};
 
 	static bool CheckDependencies();
-	static bool classRetrievalAvailable;
-	static bool comparisonAvailable;
-	static bool conditionsRetrievalAvailable;
-	static bool localPlayerCheckAvailable;
-	static bool nameRetrievalAvailable;
-	static bool steamIDRetrievalAvailable;
-	static bool userIDRetrievalAvailable;
 private:
 	CHandle<IClientEntity> playerEntity;
 

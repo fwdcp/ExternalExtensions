@@ -12,7 +12,7 @@ cache:
 sudo: false
 
 install:
-- git clone -q --depth 1 https://github.com/boostorg/boost.git $TRAVIS_BUILD_DIR/../boost && cd $TRAVIS_BUILD_DIR/../boost && git submodule --quiet update --init --recursive
+- git clone -q --depth 1 https://github.com/boostorg/boost.git $TRAVIS_BUILD_DIR/../boost && cd $TRAVIS_BUILD_DIR/../boost && git submodule --quiet update --init --recursive --depth 1
   && cd $TRAVIS_BUILD_DIR/../boost && ./bootstrap.sh && ./b2 --with-system -d 0 address-model=32 headers stage
 - git clone -q --depth 1 https://github.com/open-source-parsers/jsoncpp.git $TRAVIS_BUILD_DIR/../jsoncpp
   && cd $TRAVIS_BUILD_DIR/../jsoncpp && python amalgamate.py

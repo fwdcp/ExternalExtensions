@@ -14,16 +14,12 @@
 #include "interface.h"
 #include "tier0/valve_minmax_off.h"
 
-class C_HLTVCamera;
-class C_TeamplayRoundBasedRules;
-class CGlobalVarsBase;
 class CSteamAPIContext;
 class IBaseClientDLL;
 class IClientEntityList;
-class IClientMode;
+class IEngineTool;
 class IFileSystem;
 class IGameEventManager2;
-class IGameResources;
 class IVEngineClient;
 class IVModelInfoClient;
 class IVRenderView;
@@ -36,6 +32,8 @@ class Interfaces {
 		static IBaseClientDLL *pClientDLL;
 		static IClientEntityList *pClientEntityList;
 		static IVEngineClient *pEngineClient;
+		static IEngineTool *pEngineTool;
+		static IFileSystem *pFileSystem;
 		static IGameEventManager2 *pGameEventManager;
 		static IVModelInfoClient *pModelInfoClient;
 		static IVRenderView *pRenderView;
@@ -43,6 +41,4 @@ class Interfaces {
 
 		static bool steamLibrariesAvailable;
 		static bool vguiLibrariesAvailable;
-	private:
-		static CDllDemandLoader *pClientModule;
 };

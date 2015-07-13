@@ -6,6 +6,10 @@ plugin exposing an API to the Team Fortress 2 client
 Changelog
 ---------
 
+# 0.1.3
+* general
+  * fixed issues with retrieving entities
+
 # 0.1.2
 * general
   * ported to Linux

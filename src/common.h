@@ -38,5 +38,5 @@ inline std::string ConvertTreeToString(std::vector<std::string> tree) {
 	return string;
 }
 
-#define PLUGIN_VERSION "0.1.2"
+#define PLUGIN_VERSION "0.1.3"
 #define PRINT_TAG() ConColorMsg(Color(0, 153, 153, 255), "[ExternalExtensions] ")

@@ -6,19 +6,19 @@ plugin exposing an API to the Team Fortress 2 client
 Changelog
 ---------
 
-# 0.1.3
+### 0.1.3
 * general
   * fixed issues with retrieving entities
 
-# 0.1.2
+### 0.1.2
 * general
   * ported to Linux
 
-# 0.1.1
+### 0.1.1
 * general
   * fixed crashes caused by changes outside of the game thread
 
-# 0.1.0**
+### 0.1.0
 * general
   * rewrote onto StatusSpec plugin base
   * added options to start/stop the server and change server port
@@ -29,7 +29,7 @@ Changelog
 * game info
   * added new module
 
-# 0.0.1
+### 0.0.1
 * general
   * initial version
 * console
